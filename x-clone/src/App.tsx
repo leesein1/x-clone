@@ -1,26 +1,28 @@
-import { createBrowserRouter, Router, RouterProvider } from 'react-router-dom';
-import Layout from './components/layout';
-import Home from './routes/home';
-import Profile from './routes/profile';
-import Login from './routes/login';
-import CreateAccount from './routes/create-account';
-import { createGlobalStyle } from 'styled-components';
-import reset from 'styled-reset';
-import { useEffect, useState } from 'react';
-import LoadingScreen from './components/loading-screen';
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Layout from "./components/layout";
+import Home from "./routes/home";
+import Profile from "./routes/profile";
+import Login from "./routes/login";
+import CreateAccount from "./routes/create-account";
+import { createGlobalStyle, styled } from "styled-components";
+import reset from "styled-reset";
+import { useEffect, useState } from "react";
+import LoadingScreen from "./components/loading-screen";
+import { auth } from "./firebase";
+import ProtecteRoute from "./components/protected-route";
 
 const router = createBrowserRouter([
   { 
     path: '/',
-    element: <Layout />,
+    element: <ProtecteRoute><Layout /></ProtecteRoute>,
     children: [
       {
         path: '',
-        element: <Home/>
+        element: <ProtecteRoute><Home/></ProtecteRoute> 
       },
       {
         path: 'profile',
-        element: <Profile/>
+        element: <ProtecteRoute><Profile/></ProtecteRoute>
       }
     ]
   },
@@ -47,6 +49,12 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const Wrapper = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+`;
+
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   // FireBase 로그인 진행 중 대기시간 벌기위한 화면
@@ -54,6 +62,7 @@ function App() {
     //wait for firebase auth to initialize
     //끝나면 로딩 false로 변경
     //현재는 firebase auth를 사용하지 않기 때문에 바로 false로 변경
+    await auth.authStateReady();
     setIsLoading(false)
   }
 
@@ -62,10 +71,10 @@ function App() {
   }, []);
 
   return (
-    <>
+    <Wrapper>
       <GlobalStyle />
       {isLoading ? <LoadingScreen /> : <RouterProvider router={router} />}
-    </>
+    </Wrapper>
   )
 }
 
