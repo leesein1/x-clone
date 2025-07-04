@@ -1,5 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; 
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDKvHiq6aKUFb1VMhxx0eAz9vWJ428jxR4",
@@ -17,4 +19,7 @@ const app = initializeApp(firebaseConfig);
 // auth 객체는 Firebase Authentication의 기능을 사용할 수 있게 해줌
 
 export const auth = getAuth(app);
+export const storage = getStorage(app);
+export const db = getFirestore(app);
+
 
