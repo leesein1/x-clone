@@ -29,7 +29,7 @@ const TextArea = styled.textarea`
     }
     &:focus {
         outline: none;
-        border-color: #1d9bf0;
+
     }
 `;
 

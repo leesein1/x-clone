@@ -93,7 +93,7 @@ const HiddenFileInput = styled.input`
 
 export default function EditModal({content: initialContent, tweetId: initialTweetId, onClose,}: EditModalProps) {
     const [content, setContent] = useState(initialContent); // 새로운 content (tweet)
-    const [tweetId, setTweetId] = useState(initialTweetId);
+    const [tweetId] = useState(initialTweetId);
     const [file, setFile] = useState<File | null>(null);;
 
     const [isLoading, setIsLoading] = useState(false); // 트윗하는 상태 관리
@@ -167,7 +167,7 @@ export default function EditModal({content: initialContent, tweetId: initialTwee
 
     return (
         <>
-        {/* 한 번만 선언해 두면 전역에서 모달 스타일을 재사용할 수 있습니다 */}
+        {/* 한 번만 선언해 두면 전역에서 모달 스타일을 재사용할 수 있다 */}
         <GlobalModalStyle />
 
         <Modal

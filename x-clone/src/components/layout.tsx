@@ -2,9 +2,9 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import { auth } from "../firebase";
 import { useState } from "react";
-import Modal from "react-modal";
 import ModalCoponent from "./modal-components";
 import EditModal from "./edit.modal";
+import EditModalProfileName from "./edit-modal-profilename";
 
 const Wrapper = styled.div`
     display: grid;
@@ -71,6 +71,18 @@ export default function Layout() {
         onConfirm: () => {},
     });
 
+    // 프로필 네임 변경을 위한 모달 state
+    const [modalProfileName, setModalProfileName] = useState<{
+        isOpen: boolean;
+        title: string;
+        currentName: string;
+        onConfirm?: (newName: string) => void;
+    }>({
+        isOpen: false,
+        title: "프로필 이름 수정",
+        currentName: "",
+    });
+
     // 로그아웃 모달 fn
     const onLogOut = () => {
         setModalInfo({
@@ -112,6 +124,18 @@ export default function Layout() {
             tweetId: options.tweetId
         })
     }
+
+    const openModalProfileName = (options: {
+        isOpen: true;
+        title: string;
+        currentName: string;
+    }) => {
+        setModalProfileName({
+            isOpen: true,
+            title: options.title,
+            currentName: options.currentName,
+        });
+    };
 
     return (
         <Wrapper>
@@ -164,7 +188,7 @@ export default function Layout() {
             </svg>
             </MenuItem>
         </Menu>
-        <Outlet context={{openModal, openEditModal}}/>
+        <Outlet context={{openModal, openEditModal, openModalProfileName}}/>
             {/* 확인 / 취소 모달 */}
             {modalInfo.isOpen && (
                 <ModalCoponent
@@ -186,6 +210,16 @@ export default function Layout() {
                     }
                 />
                 
+            )}
+            {/*프로필 네임 변경 모달*/}
+            {modalProfileName.isOpen && (
+            <EditModalProfileName
+                title={modalProfileName.title}
+                currentName={modalProfileName.currentName}
+                onClose={() =>
+                setModalProfileName((prev) => ({ ...prev, isOpen: false }))
+                }
+            />
             )}
         </Wrapper>
     );
