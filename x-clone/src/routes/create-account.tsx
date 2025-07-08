@@ -5,8 +5,9 @@ import { auth } from "../firebase"; // Firebase auth 객체를 가져옵니다.
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 useNavigate 훅
 import { FirebaseError } from "firebase/app";
 import { Link } from "react-router-dom"; // Link 컴포넌트를 사용하여 페이지 이동을 구현합니다.
-import{ Error, Form, Input, Switchger, Title, Wrapper } from "../components/auth-components"; // auth 통합 컴포넌트를 가져옵니다.
+import{ Content, Error, Form, FormWrapper, Input, Logo, Switchger, Title, Wrapper } from "../components/auth-components"; // auth 통합 컴포넌트를 가져옵니다.
 import { GitHubButton } from "../components/github-btn"; // GitHub 로그인 버튼 컴포넌트
+import { GoogleButton } from "../components/google-btn";
 
 export default function CreateAccount() {
     const navigate = useNavigate(); // 페이지 이동을 위한 navigate 함수
@@ -83,18 +84,29 @@ export default function CreateAccount() {
 
     return (
         <Wrapper> 
-            <Title>Join 𝕏</Title>
-            <Form onSubmit={onSubmit}>
-                <Input onChange={onChange} name="name" value={name} type="text" placeholder="Name" required />
-                <Input onChange={onChange} name="email" value={email} type="email" placeholder="Email" required />
-                <Input onChange={onChange} name="password" value={password} type="password" placeholder="Password" required />
-                <Input type="submit" value={isLoading ? "Loading..." : "Create Account"} />
-            </Form>
-            {error !== "" ? <Error>{error}</Error> : null}
-            <Switchger>
-                이미 가입한 계정이 있으신가요? ? <Link to="/login">Log in</Link>
-            </Switchger>
-            <GitHubButton setError={setError} />
+            <Logo>
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="450" height="380" viewBox="0 0 32 24">
+                    <path d="M 2.3671875 3 L 9.4628906 13.140625 L 2.7402344 21 L 5.3808594 21 L 10.644531 14.830078 L 14.960938 21 L 21.871094 21 L 14.449219 10.375 L 20.740234 3 L 18.140625 3 L 13.271484 8.6875 L 9.2988281 3 L 2.3671875 3 z M 6.2070312 5 L 8.2558594 5 L 18.033203 19 L 16.001953 19 L 6.2070312 5 z"></path>
+                    <text x="25.5" y="21" textAnchor="middle" fontSize="1.5" fill="#666">
+                        @silee.dev
+                    </text>
+                </svg>
+            </Logo>
+            <Content>
+            <Title>계정을 생성하세요</Title>
+                <FormWrapper>
+                    <Form onSubmit={onSubmit}>
+                        <Input onChange={onChange} name="name" value={name} type="text" placeholder="Name" required />
+                        <Input onChange={onChange} name="email" value={email} type="email" placeholder="Email" required />
+                        <Input onChange={onChange} name="password" value={password} type="password" placeholder="Password" required />
+                        <Input type="submit" value={isLoading ? "Loading..." : "Create Account"} />
+                    </Form>
+                    {error !== "" ? <Error>{error}</Error> : null}
+                    <Switchger>
+                        이미 가입한 계정이 있으신가요? ? <Link to="/login">Log in</Link>
+                    </Switchger>
+                </FormWrapper>
+            </Content>
         </Wrapper>
     );
 }

@@ -12,11 +12,16 @@ const Button = styled.button`
     font-weight: 500;
     padding: 10px 20px;
     border-radius: 50px;
-    border: 0;
+    border: 1px solid gray;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
+    transition: background-color 0.2s ease-in-out; /* 부드러운 전환 */
+
+    &:hover {
+        background-color: #eee; /* hover 시 배경색 변경 */
+    }
 `;
 
 const Logo = styled.img`

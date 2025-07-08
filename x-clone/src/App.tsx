@@ -42,17 +42,18 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background-color: black;
-    color: white;
+    background-color: #fff;
+    color: #000;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 
   }
 `;
 
 const Wrapper = styled.div`
-  height: 100vh;
-  display: flex;
-  justify-content: center;
+    height: 100vh;
+    width:100%
+    display: flex;
+    justify-content: center;
 `;
 
 function App() {
