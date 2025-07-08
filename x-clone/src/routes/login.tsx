@@ -3,7 +3,7 @@ import { auth } from "../firebase"; // Firebase auth 객체를 가져옵니다.
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 useNavigate 훅
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link } from "react-router-dom"; // Link 컴포넌트를 사용하여 페이지 이동을 구현합니다.
-import{ Content, Error, Footer, Form, FormWrapper, Input, Logo, MadeByTag, OrText, SubTitle, Switchger, Title, Wrapper } from "../components/auth-components"; // auth 통합 컴포넌트를 가져옵니다.
+import{ Content, Error, Form, FormWrapper, Input, Logo, MadeByTag, OrText, SubTitle, Switchger, Title, Wrapper } from "../components/auth-components"; // auth 통합 컴포넌트를 가져옵니다.
 import { FirebaseError } from "firebase/app"; // Firebase 에러 처리를 위한 FirebaseError 클래스
 import { GitHubButton } from "../components/github-btn";
 import { GoogleButton } from "../components/google-btn";
