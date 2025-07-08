@@ -6,8 +6,7 @@ import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 us
 import { FirebaseError } from "firebase/app";
 import { Link } from "react-router-dom"; // Link 컴포넌트를 사용하여 페이지 이동을 구현합니다.
 import{ Content, Error, Form, FormWrapper, Input, Logo, Switchger, Title, Wrapper } from "../components/auth-components"; // auth 통합 컴포넌트를 가져옵니다.
-import { GitHubButton } from "../components/github-btn"; // GitHub 로그인 버튼 컴포넌트
-import { GoogleButton } from "../components/google-btn";
+
 
 export default function CreateAccount() {
     const navigate = useNavigate(); // 페이지 이동을 위한 navigate 함수
