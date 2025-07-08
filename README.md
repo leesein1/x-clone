@@ -1,7 +1,24 @@
+# 𝕏 X-Clone (구 트위터 클론 프로젝트)
 
-# 𝕏 X-Clone(구 트위터) 클론 코딩
+트위터의 핵심 기능을 직접 구현한 SNS 클론 프로젝트입니다.  
+Firebase를 기반으로 사용자 인증, 트윗 작성/삭제, 이미지 업로드, 실시간 타임라인 등  
+**실제 서비스에 준하는 구조와 기능을 구현**하였고, Firebase Hosting을 통해 배포까지 완료했습니다.
 
-트위터의 주요 기능을 구현한 클론 프로젝트입니다. Firebase를 기반으로 사용자 인증, 데이터 저장, 이미지 업로드, 실시간 트윗 기능을 지원하며, 배포까지 완료된 프로젝트입니다.
+---
+
+## 🧑‍💻 개발 목적
+
+📌 기존에 주로 C#과 .NET 기반의 웹 개발을 해왔지만,  
+**현업에서 널리 쓰이는 React와 TypeScript**같은 프론트엔디 기술의 흥미를 느껴  
+이를 실습하고 익히기 위한 목적으로 이 프로젝트를 시작하게 되었습니다.
+
+프로젝트 초반에는 **노마드코더의 트위터 클론 강의**를 참고하여  
+React 구조와 Firebase 환경 구성의 기초를 학습했고,  
+이후에는 기능들을 **직접 설계하고 구현하며 확장해 나가는 중**입니다.
+
+현재는 댓글, 좋아요, 검색, 무한 스크롤 등  
+**실제 X사이트의 기능과 UX의 구현을 목표로 계속 개발 중**인 개인 사이드 프로젝트입니다.
+
 
 ## 🚀 데모
 
@@ -19,28 +36,36 @@
 | 배포 | Firebase Hosting |
 | 그 외 | React Router, GitHub OAuth, React Modal |
 
-## 🧩 주요 기능
+---
 
-- [x] 회원가입 / 로그인 / 로그아웃 (GitHub OAuth 포함)
-- [x] 트윗 작성, 삭제
-- [x] 이미지 업로드 (10MB 제한)
-- [x] 유저 프로필 수정 (닉네임 변경)
-- [x] 실시간 트윗 타임라인 (onSnapshot)
-- [x] Firebase 보안 규칙 적용
-- [x] 반응형 UI (모바일 대응)
-- [x] 배포 및 테스트 계정 구성
+## 📁 주요 기능 기반 폴더 구조
 
-## 📁 폴더 구조
-
-\`\`\`
+```
 src/
-├── components/        # UI 컴포넌트들
-├── routes/            # 페이지 컴포넌트들 (home, login 등)
-├── hooks/             # 커스텀 훅 (선택)
-├── firebase.ts        # Firebase 설정 파일
-├── App.tsx
-└── main.tsx
-\`\`\`
+├── App.tsx                       # 앱의 루트 컴포넌트, 라우터 및 전체 구조 정의
+├── firebase.ts                   # Firebase 초기화 및 설정 파일
+├── main.tsx                      # React 앱 진입점 (root DOM 렌더링)
+├── vite-env.d.ts                 # Vite 환경 타입 선언
+│
+├── components/                      # 재사용 가능한 UI 및 기능 컴포넌트
+│   ├── auth-components.ts           # 로그인/회원가입 관련 공통 컴포넌트
+│   ├── edit.modal.tsx               # 닉네임 변경 모달 컴포넌트
+│   ├── edit-modal-profilename.tsx   # 프로필 이름 수정 전용 모달 컴포넌트
+│   ├── github-btn.tsx               # GitHub 로그인 버튼 컴포넌트
+│   ├── layout.tsx                   # 전체 페이지 레이아웃 (Outlet 포함) 컴포넌트
+│   ├── loading-screen.tsx           # 로딩 상태일 때 표시될 화면 컴포넌트
+│   ├── modal-components.tsx         # 삭제 확인 등 일반 모달 컴포넌트
+│   ├── post-tweet-form.tsx          # 트윗 작성 폼 컴포넌트
+│   ├── protected-route.tsx          # 비 로그인 회원 식별 및 로그인 화면 포위딩
+│   ├── timeline.tsx                 # 트윗 타임라인 현시 컴포넌트
+│   └── tweet.tsx                    # 개별 트윗 렌더링 컴포넌트
+│
+└── routes/                          # 페이지별 라우팅 컴포넌트
+    ├── create-account.tsx           # 회원가입 페이지 컴포넌트
+    ├── home.tsx                     # 메인 타임라인 페이지 컴포넌트
+    ├── login.tsx                    # 로그인 페이지 컴포넌트
+    └── profile.tsx                  # 사용자 프로필 페이지 컴포넌트
+```
 
 ## ⚙️ Firebase 설정
 
@@ -48,14 +73,14 @@ src/
 - **이메일/비밀번호** + **GitHub 로그인**
 - `GitHub OAuth 설정 시 주의`:
   - 콜백 URL:  
-    \`\`\`
+    ```
     https://x-clone-d17bb.web.app/__/auth/handler
     https://x-clone-d17bb.firebaseapp.com/__/auth/handler
-    \`\`\`
+    ```
 
 ### 🔐 Firestore 보안 규칙
 
-\`\`\`ts
+```ts
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -65,11 +90,11 @@ service cloud.firestore {
     }
   }
 }
-\`\`\`
+```
 
 ### 🗂️ Storage 보안 규칙
 
-\`\`\`ts
+```ts
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
@@ -79,7 +104,7 @@ service firebase.storage {
     }
   }
 }
-\`\`\`
+```
 
 # ✨ 향후 추가 예정 기능 - Twitter Clone
 
