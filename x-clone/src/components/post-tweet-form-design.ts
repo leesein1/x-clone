@@ -66,7 +66,6 @@ export const BottomRow = styled.div`
 export const LeftIcons = styled.div`
     display: flex;
     align-items: center;
-    gap: 12px;
 
     svg {
         width: 26px;

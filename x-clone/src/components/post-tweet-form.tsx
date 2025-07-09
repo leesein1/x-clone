@@ -2,10 +2,11 @@
 import { useNavigate } from "react-router-dom";
 
 import { addDoc, collection, updateDoc, doc as docRef } from "firebase/firestore";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { auth, db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { AttachFileButton, AttachFileInput, BottomRow, Form, LeftIcons, SubmitBtn, TextArea } from "./post-tweet-form-design";
+import EmojiButton from "./emoji-picker";
 
 
 
@@ -14,7 +15,28 @@ export default function PostTweetForm() {
     const [isLoading, setIsLoading] = useState(false); // 트윗하는 상태 관리
     const [tweet, setTweet] = useState(""); // 트윗 내용 관리
     const [file, setFile] = useState<File | null>(null); // 첨부 파일
+
+    const textAreaRef = useRef<HTMLTextAreaElement>(null); // 이모지 첨부를 위해
     
+    const insertEmoji = (emoji: string) => {
+        const textarea = textAreaRef.current;
+        if (!textarea) return;
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+
+        const newTweet =
+            tweet.slice(0, start) + emoji + tweet.slice(end);
+
+        setTweet(newTweet);
+
+        // 커서 위치 갱신
+        setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(start + emoji.length, start + emoji.length);
+        }, 0);
+    };
+
     const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setTweet(e.target.value);
     }
@@ -91,12 +113,14 @@ export default function PostTweetForm() {
 
     return (
         <Form onSubmit={onSubmit}>
-            <TextArea
-                placeholder="무슨 일이 있으신가요?"
-                onInput={autoResize}
-                onChange={onChange}
-                rows={1}
-            />
+        <TextArea
+            ref={textAreaRef}
+            value={tweet}
+            onChange={onChange}
+            onInput={autoResize}
+            placeholder="무슨 일이 있으신가요?"
+            rows={1}
+        />
 
             <BottomRow>
                 <LeftIcons>
@@ -118,7 +142,7 @@ export default function PostTweetForm() {
                 </AttachFileButton>
 
                 <AttachFileInput onChange={onFileChange} id="file" type="file" accept="image/*" />
-                {/* 추가 아이콘: 이모지, 위치 등 가능 */}
+                <EmojiButton onSelect={insertEmoji} />
                 </LeftIcons>
                 <SubmitBtn type="submit" value={isLoading ? "Posting..." : "게시하기"} />
             </BottomRow>
