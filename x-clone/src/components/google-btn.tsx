@@ -1,8 +1,9 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { styled } from "styled-components";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const Button = styled.button`
     width: 100%;
@@ -27,6 +28,12 @@ const Logo = styled.img`
     height: 25px;
 `;
 
+// 랜덤 핸들 생성기
+const generateRandomHandle = () => {
+    const randomNum = Math.floor(100000 + Math.random() * 900000);
+    return `user_${randomNum}`;
+};
+
 export function GoogleButton({ setError }: { setError: (msg: string) => void }) {
     const navigate = useNavigate();
 
@@ -35,7 +42,24 @@ export function GoogleButton({ setError }: { setError: (msg: string) => void }) 
 
         try {
             const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+
+            const userRef = doc(db, "users", user.uid);
+            const userDoc = await getDoc(userRef);
+
+            if (!userDoc.exists()) {
+                const randomHandle = generateRandomHandle();
+
+                await setDoc(userRef, {
+                    uid: user.uid,
+                    name: user.displayName || "",
+                    handle: randomHandle,
+                    email: user.email || "",
+                    createdAt: Date.now(),
+                    isAutoHandle: true
+                });
+            }
             navigate("/");
         } catch (e) {
             if (e instanceof FirebaseError) {

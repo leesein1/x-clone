@@ -1,8 +1,9 @@
 import { GithubAuthProvider, signInWithPopup } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { styled } from "styled-components";
-import { auth } from "../firebase"; // Firebase auth 객체를 가져옵니다.
+import { auth, db } from "../firebase"; // auth, db 모두 사용
 import { useNavigate } from "react-router-dom";
-import { FirebaseError } from "firebase/app"; // Firebase 에러 처리를 위한 FirebaseError 클래스
+import { FirebaseError } from "firebase/app";
 
 const Button = styled.button`
     margin-top: 50px;
@@ -17,10 +18,10 @@ const Button = styled.button`
     align-items: center;
     justify-content: center;
     gap: 5px;
-    transition: background-color 0.2s ease-in-out; /* 부드러운 전환 */
+    transition: background-color 0.2s ease-in-out;
 
     &:hover {
-        background-color: #eee; /* hover 시 배경색 변경 */
+        background-color: #eee;
     }
 `;
 
@@ -28,19 +29,41 @@ const Logo = styled.img`
     height: 25px;
 `;
 
+// 랜덤 handle 생성기
+const generateRandomHandle = () => {
+    const randomNum = Math.floor(100000 + Math.random() * 900000); // 6자리 숫자
+    return `user_${randomNum}`;
+};
+
 export function GitHubButton({ setError }: { setError: (msg: string) => void }) {
     const navigate = useNavigate();
 
     const onClick = async () => {
-        setError(""); // 기존 에러 초기화
+        setError("");
 
         try {
             const provider = new GithubAuthProvider();
-            await signInWithPopup(auth, provider);
-            navigate("/");
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
 
-            // 비밀번호 재설정 이메일 보내기 (선택 사항)
-            //sendEmailpasswordResetEmail(auth.currentUser?.email || "", "https://your-app.com/reset-password");
+            const userRef = doc(db, "users", user.uid);
+            const userDoc = await getDoc(userRef);
+
+            // Firestore에 등록되지 않은 사용자면 랜덤 핸들로 자동 생성
+            if (!userDoc.exists()) {
+                const randomHandle = generateRandomHandle();
+                    await setDoc(userRef, {
+                    uid: user.uid,
+                    name: user.displayName || "",
+                    handle: randomHandle,
+                    email: user.email || "",
+                    photoURL: user.photoURL || "",
+                    createdAt: Date.now(),
+                    isAutoHandle: true
+                });
+            }
+            // 메인으로 이동
+            navigate("/");
         } catch (e) {
             if (e instanceof FirebaseError) {
                 switch (e.code) {
@@ -66,12 +89,12 @@ export function GitHubButton({ setError }: { setError: (msg: string) => void }) 
                     setError("GitHub 로그인 중 오류가 발생했습니다.");
                     break;
                 }
-            } else {
-                setError("예기치 못한 오류가 발생했습니다.");
-            }
-            console.error("GitHub login failed:", e);
+        } else {
+            setError("예기치 못한 오류가 발생했습니다.");
         }
-    };
+            console.error("GitHub login failed:", e);
+    }
+};
 
     return (
         <Button onClick={onClick}>
@@ -80,4 +103,3 @@ export function GitHubButton({ setError }: { setError: (msg: string) => void }) 
         </Button>
     );
 }
-

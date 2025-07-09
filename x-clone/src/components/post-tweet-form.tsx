@@ -3,71 +3,18 @@ import { useNavigate } from "react-router-dom";
 
 import { addDoc, collection, updateDoc, doc as docRef } from "firebase/firestore";
 import { useState } from "react";
-import { styled } from "styled-components";
 import { auth, db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { AttachFileButton, AttachFileInput, BottomRow, Form, LeftIcons, SubmitBtn, TextArea } from "./post-tweet-form-design";
 
-const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-`;
 
-const TextArea = styled.textarea`
-    border: 2px solid white;
-    padding: 20px;
-    border-radius: 20px;
-    font-size: 16px;
-    color: white;
-    background-color: black;
-    width: 100%;
-    resize: none;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    &::placeholder {
-        font-size: 16px;
-    }
-    &:focus {
-        outline: none;
-
-    }
-`;
-
-const AttachFileButton = styled.label`
-    padding: 10px 0px;
-    color: #1d9bf0;
-    text-align: center;
-    border-radius: 20px;
-    border: 1px solid #1d9bf0;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-`;
-
-const AttachFileInput = styled.input`
-    display: none;
-`;
-
-const SubmitBtn = styled.input`
-    background-color: #1d9bf0;
-    color: white;
-    border: none;
-    padding: 10px 0px;
-    border-radius: 20px;
-    font-size: 16px;
-    cursor: pointer;
-    &:hover,
-    &:active {
-        opacity: 0.9;
-    }
-`;
 
 export default function PostTweetForm() {
     const navigate = useNavigate(); 
     const [isLoading, setIsLoading] = useState(false); // 트윗하는 상태 관리
     const [tweet, setTweet] = useState(""); // 트윗 내용 관리
     const [file, setFile] = useState<File | null>(null); // 첨부 파일
-
+    
     const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setTweet(e.target.value);
     }
@@ -130,19 +77,51 @@ export default function PostTweetForm() {
             setTweet("");
             setFile(null);
         }catch(error){
-            // 마지막에 무슨 에러인지도 보여줄 예정
             console.log(error);
         }finally{
             setIsLoading(false);
         }
     }
 
+    const autoResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        e.target.style.height = "auto"; // 높이 초기화
+        e.target.style.height = `${e.target.scrollHeight}px`; // 내용만큼 다시 확장
+        onChange(e); // 기존 onChange도 같이 실행
+    };
+
     return (
         <Form onSubmit={onSubmit}>
-            <TextArea rows={5} onChange={onChange} placeholder="무슨일이 있으신가요~?" />
-            <AttachFileButton htmlFor="file">{file ? "Photo added" : "add Photo"}</AttachFileButton>
-            <AttachFileInput onChange={onFileChange} id="file" type="file" accept="image/*" />
-            <SubmitBtn type="submit" value={isLoading ? "Posting..." : "Post Tweet"} />
+            <TextArea
+                placeholder="무슨 일이 있으신가요?"
+                onInput={autoResize}
+                onChange={onChange}
+                rows={1}
+            />
+
+            <BottomRow>
+                <LeftIcons>
+
+                <AttachFileButton htmlFor="file">
+                <svg
+                    data-slot="icon"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                >
+                    <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M1 5.25A2.25 2.25 0 0 1 3.25 3h13.5A2.25 2.25 0 0 1 19 5.25v9.5A2.25 2.25 0 0 1 16.75 17H3.25A2.25 2.25 0 0 1 1 14.75v-9.5Zm1.5 5.81v3.69c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75v-2.69l-2.22-2.219a.75.75 0 0 0-1.06 0l-1.91 1.909.47.47a.75.75 0 1 1-1.06 1.06L6.53 8.091a.75.75 0 0 0-1.06 0l-2.97 2.97ZM12 7a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
+                    />
+                </svg>
+                </AttachFileButton>
+
+                <AttachFileInput onChange={onFileChange} id="file" type="file" accept="image/*" />
+                {/* 추가 아이콘: 이모지, 위치 등 가능 */}
+                </LeftIcons>
+                <SubmitBtn type="submit" value={isLoading ? "Posting..." : "게시하기"} />
+            </BottomRow>
         </Form>
     );
 }

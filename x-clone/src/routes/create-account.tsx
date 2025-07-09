@@ -1,11 +1,12 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 
-import { auth } from "../firebase"; // Firebase auth 객체를 가져옵니다.
+import { auth, db } from "../firebase"; // Firebase auth 객체를 가져옵니다.
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 useNavigate 훅
 import { FirebaseError } from "firebase/app";
 import { Link } from "react-router-dom"; // Link 컴포넌트를 사용하여 페이지 이동을 구현합니다.
 import{ Content, Error, Form, FormWrapper, Input, Logo, Switchger, Title, Wrapper } from "../components/auth-components"; // auth 통합 컴포넌트를 가져옵니다.
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 
 
 export default function CreateAccount() {
@@ -16,6 +17,7 @@ export default function CreateAccount() {
 
     // 계정 생성에 필요한 정보들을 관리하기 위한 state
     const [name, setName] = useState(""); // 이름을 관리하기 위한 state
+    const [handle, setHandle] = useState("");
     const [email, setEmail] = useState(""); // 이메일을 관리하기 위한 state
     const [password, setPassword] = useState(""); // 비밀번호를 관리하기 위한 state
     const [error, setError] = useState(""); // 에러 메시지를 관리하기 위한 state
@@ -26,28 +28,57 @@ export default function CreateAccount() {
         const { target: { name, value } } = event;
         if (name === "name") {
             setName(value);
-        } else if (name === "email") {
+        } else if (name === "handle") {
+            if (value.includes("@")) {
+                setError("@ 빼고 입력해주세요");
+            } else {
+                setError(""); // 에러 메시지 초기화
+                setHandle(value);
+            }
+        }else if (name === "email") {
             setEmail(value);
         } else if (name === "password") {
             setPassword(value);
         }
     };
 
-    // 폼 제출 핸들러
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        setError(""); // 에러 메시지를 초기화
-        e.preventDefault();
-        console.log("Creating account with", { name, email, password });
+    const handleExists = async (handle: string) => {
+        const q = query(collection(db, "users"), where("handle", "==", handle));
+        const snapshot = await getDocs(q);
+        return !snapshot.empty;
+    };
 
-        if(isLoading || email === "" || password === "" || name === "") {
-            setError("All fields are required.");
-            return;
-        }
+
+    // 폼 제출 핸들러
+
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setError(""); // 에러 초기화
+        setIsLoading(true);
 
         try {
-        const credentials = await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(credentials.user, { displayName: name });
-        navigate("/");
+            // ✅ handle 중복 확인
+            const exists = await handleExists(handle);
+            if (exists) {
+            setError("이미 사용 중인 핸들입니다.");
+            setIsLoading(false);
+            return;
+            }
+
+            const credentials = await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(credentials.user, { displayName: name });
+            await setDoc(doc(db, "users", credentials.user.uid), {
+                uid: credentials.user.uid,
+                name,
+                handle,
+                email,
+                photoURL: credentials.user.photoURL || "",
+                createdAt: Date.now(),
+            });
+
+            // 가입 완료 후 이동
+            navigate("/");
+
         } catch (e) {
             if (e instanceof FirebaseError) {
                 switch (e.code) {
@@ -96,6 +127,7 @@ export default function CreateAccount() {
                 <FormWrapper>
                     <Form onSubmit={onSubmit}>
                         <Input onChange={onChange} name="name" value={name} type="text" placeholder="Name" required />
+                        <Input onChange={onChange} name="handle" value={handle} type="text" placeholder="@빼고 입력해주세요" required />
                         <Input onChange={onChange} name="email" value={email} type="email" placeholder="Email" required />
                         <Input onChange={onChange} name="password" value={password} type="password" placeholder="Password" required />
                         <Input type="submit" value={isLoading ? "Loading..." : "Create Account"} />
