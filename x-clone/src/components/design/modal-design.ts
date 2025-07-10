@@ -20,7 +20,7 @@ export const GlobalModalStyle = createGlobalStyle`
         border-radius: 12px;
         padding: 30px;
         width: 100%;
-        max-width: 400px;
+        max-width: 450px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         outline: none;
         animation: fadeIn 0.2s ease-in-out;

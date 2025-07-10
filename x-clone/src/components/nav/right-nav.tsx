@@ -12,9 +12,9 @@ export default function RightNav() {
     const onSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.trim();
 
-        if (!value) {
-        setSearchResults([]);
-        return;
+            if (!value) {
+                setSearchResults([]);
+            return;
         }
 
         let q;
@@ -46,7 +46,7 @@ export default function RightNav() {
 
     return (
         <Menu id="menu-right">
-            <MenuInnerBox>
+            <MenuInnerBox id="menu-right-inner">
                 <SearchWrapper>
                     <SearchBox $focused={focused}>
                         <SearchIcon>

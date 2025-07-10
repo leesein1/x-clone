@@ -12,11 +12,21 @@ import EditModalHandle from "./modal/edit-modal-handle";
 const Wrapper = styled.div`
     display: grid;
     gap: 20px;
-    grid-template-columns: 1fr 4fr 2fr;
     height: 100vh;
     padding: 10px 0px;
-    max-width: 65%;
-    overflow: hidden;
+
+    // 왼쪽 최소 80px ~ 최대 250px
+    // 중앙 고정 (예: 600px)
+    // 오른쪽 최소 0 ~ 최대 350px (없어질 수도 있음)
+    grid-template-columns: minmax(80px, 250px) minmax(600px, 1fr) minmax(0px, 350px);
+
+    @media (max-width: 1400px) {
+        grid-template-columns: minmax(80px, 250px) minmax(600px, 1fr) 0px;
+    }
+
+    @media (max-width: 1200px) {
+        grid-template-columns: minmax(40px, 80px) minmax(100%, 1fr) 0px;
+    }
 `;
 
 const ContentBox = styled.div`
@@ -25,6 +35,7 @@ const ContentBox = styled.div`
     box-sizing: border-box;
     border-right: 1px solid #eee;
     border-left: 1px solid #eee;
+    min-width:616px;
 `;
 
 export default function Layout() {

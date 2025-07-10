@@ -5,7 +5,7 @@ import { addDoc, collection, updateDoc, doc as docRef } from "firebase/firestore
 import { useRef, useState } from "react";
 import { auth, db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { AttachFileButton, AttachFileInput, BottomRow, Form, LeftIcons, SubmitBtn, TextArea } from "./post-tweet-form-design";
+import { AttachFileButton, AttachFileInput, BottomRow, Form, LeftIcons, SubmitBtn, TextArea } from "./design/post-tweet-form-design";
 import EmojiButton from "./emoji-picker";
 import useUserInfo from "./user-info";
 
@@ -96,7 +96,7 @@ export default function PostTweetForm() {
                 // 저장한 주소 반환
                 const url = await getDownloadURL(result.ref);
 
-                const tweetRef = docRef(db, "tweets", doc.id); // ✅ 명시적 문서 참조 생성
+                const tweetRef = docRef(db, "tweets", doc.id);
                 await updateDoc(tweetRef, {
                 photo: url,
                 });
@@ -119,14 +119,14 @@ export default function PostTweetForm() {
 
     return (
         <Form onSubmit={onSubmit}>
-        <TextArea
-            ref={textAreaRef}
-            value={tweet}
-            onChange={onChange}
-            onInput={autoResize}
-            placeholder="무슨 일이 있으신가요?"
-            rows={1}
-        />
+            <TextArea
+                ref={textAreaRef}
+                value={tweet}
+                onChange={onChange}
+                onInput={autoResize}
+                placeholder="무슨 일이 있으신가요?"
+                rows={1}
+            />
 
             <BottomRow>
                 <LeftIcons>

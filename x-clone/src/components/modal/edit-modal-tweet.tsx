@@ -1,48 +1,104 @@
 // EditModal.tsx
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Modal from "react-modal";
-
-import { auth, db, storage } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { ButtonGroup, CloseBtn, FileButton, GlobalModalStyle, HiddenFileInput, TextArea, TweetBtn } from "../design/modal-design";
+
+import { auth, db, storage } from "../../firebase";
+
+
+// 기존 tweet 폼에서 가져오는 디자인 요소
+import { TextArea, BottomRow, LeftIcons, AttachFileButton, AttachFileInput } from "../design/post-tweet-form-design";
+import EmojiButton from "../emoji-picker";
+import { GlobalModalStyle } from "../design/modal-design";
+import { styled } from "styled-components";
 
 interface EditModalProps {
     content: string;
     tweetId: string;
     onClose: () => void;
-}
+}// post-tweet-form-design.ts
 
-export default function EditModal({content: initialContent, tweetId: initialTweetId, onClose,}: EditModalProps) {
-    const [content, setContent] = useState(initialContent); // 새로운 content (tweet)
+const SubmitBtn = styled.button`
+    background-color: #1d9bf0;
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #1a8cd8;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+`;
+
+const BottomRowTweet = styled(BottomRow)`
+    margin-top:5px;
+`;
+
+
+export default function EditModal({
+    content: initialContent,
+    tweetId: initialTweetId,
+    onClose,
+}: EditModalProps) {
+    const [content, setContent] = useState(initialContent);
     const [tweetId] = useState(initialTweetId);
-    const [file, setFile] = useState<File | null>(null);;
-
-    const [isLoading, setIsLoading] = useState(false); // 트윗하는 상태 관리
+    const [file, setFile] = useState<File | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
+    const textAreaRef = useRef<HTMLTextAreaElement>(null); // 이모지 첨부를 위해
+
+    const insertEmoji = (emoji: string) => {
+        const textarea = textAreaRef.current;
+        if (!textarea) return;
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+
+        const newTweet =
+            content.slice(0, start) + emoji + content.slice(end);
+
+        setContent(newTweet);
+
+        // 커서 위치 갱신
+        setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(start + emoji.length, start + emoji.length);
+        }, 0);
+    };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { files } = e.target;
         if (files && files.length === 1) {
             const selectedFile = files[0];
-            const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+            const MAX_SIZE = 10 * 1024 * 1024;
 
             if (selectedFile.size > MAX_SIZE) {
                 alert("이미지 크기는 최대 10MB까지 업로드할 수 있습니다.");
                 setFile(null);
-                e.target.value = ""; // 같은 파일 다시 선택 가능하게 초기화
+                e.target.value = "";
                 return;
             }
-
             setFile(selectedFile);
         } else {
             setFile(null);
         }
-    };
-    
+    };  
+
+
     const onUpdate = async () => {
-        if (isLoading || content === "" || content.length > 180) return;
+        if (isLoading || content.trim() === "" || content.length > 180) return;
 
         const user = auth.currentUser;
         if (!user) {
@@ -53,7 +109,7 @@ export default function EditModal({content: initialContent, tweetId: initialTwee
 
         try {
             setIsLoading(true);
-            const tweetRef = doc(db, "tweets", tweetId); // tweetId는 수정할 문서 ID
+            const tweetRef = doc(db, "tweets", tweetId);
 
             await updateDoc(tweetRef, {
                 tweet: content,
@@ -63,23 +119,17 @@ export default function EditModal({content: initialContent, tweetId: initialTwee
             });
 
             if (file) {
-                // 스토리지에 저장할 이름
                 const locationRef = ref(storage, `tweets/${user.uid}/${tweetId}`);
-                // 저장한 결과 반환
                 const result = await uploadBytes(locationRef, file);
-                // 저장한 주소 반환
                 const url = await getDownloadURL(result.ref);
 
-                const tweetRef = doc(db, "tweets", tweetId); 
-
                 await updateDoc(tweetRef, {
-                    photo: url,
+                photo: url,
                 });
             }
 
             setContent("");
             setFile(null);
-            // 필요하면 파일 업로드 후 photo 필드도 업데이트
         } catch (e) {
             console.error(e);
         } finally {
@@ -89,27 +139,50 @@ export default function EditModal({content: initialContent, tweetId: initialTwee
     };
 
     return (
-        <>
-        {/* 한 번만 선언해 두면 전역에서 모달 스타일을 재사용할 수 있다 */}
-        <GlobalModalStyle />
+            <>
+                <GlobalModalStyle />
 
-        <Modal
-            isOpen onRequestClose={onClose} ariaHideApp={false} 
-            overlayClassName="modal-overlay" className="modal-content">
+                <Modal
+                    isOpen
+                    onRequestClose={onClose}
+                    ariaHideApp={false}
+                    overlayClassName="modal-overlay"
+                    className="modal-content"
+                >
+                    <TextArea
+                        ref={textAreaRef}
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        placeholder="내용을 수정하세요"
+                        rows={12}
+                    />
 
-            <TextArea rows={5}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-            />
+                    <BottomRowTweet>
+                        <LeftIcons>
+                            <AttachFileButton htmlFor="edit-file" title="이미지 첨부">
+                            <svg
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                            >
+                                <path
+                                clipRule="evenodd"
+                                fillRule="evenodd"
+                                d="M1 5.25A2.25 2.25 0 0 1 3.25 3h13.5A2.25 2.25 0 0 1 19 5.25v9.5A2.25 2.25 0 0 1 16.75 17H3.25A2.25 2.25 0 0 1 1 14.75v-9.5Zm1.5 5.81v3.69c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75v-2.69l-2.22-2.219a.75.75 0 0 0-1.06 0l-1.91 1.909.47.47a.75.75 0 1 1-1.06 1.06L6.53 8.091a.75.75 0 0 0-1.06 0l-2.97 2.97ZM12 7a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
+                                />
+                            </svg>
+                            </AttachFileButton>
+                            <AttachFileInput id="edit-file" type="file" accept="image/*" onChange={onFileChange} />
 
-            <ButtonGroup>
-                <FileButton htmlFor="fileInput">{file ? "Photo added" : "add Photo"}</FileButton>
-                <HiddenFileInput id="fileInput" type="file" accept="image/*" onChange={onFileChange} />
-                <TweetBtn onClick={onUpdate}>Tweet</TweetBtn>
-                <CloseBtn onClick={onClose}>Close</CloseBtn>
-            </ButtonGroup>
-        </Modal>
-        </>
+                            <EmojiButton onSelect={insertEmoji} />
+                        </LeftIcons>
+
+                        <SubmitBtn type="button" onClick={onUpdate} disabled={isLoading}>
+                            {isLoading ? "수정 중..." : "수정하기"}
+                        </SubmitBtn>
+                    </BottomRowTweet>
+                </Modal>
+            </>
     );
 }
-

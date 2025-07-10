@@ -9,9 +9,9 @@ export const Menu = styled.div`
     gap: 20px;
     width: 100%;
     height: 98.5vh;
-    
-    &#menu-right{
-        padding-left:10px;
+
+    #menu-right-inner {
+        min-width:334px;
     }
 `;
 
@@ -25,6 +25,7 @@ export const MenuInnerBox = styled.div`
     flex-direction: column;
     gap: 20px;
     width:100%;
+    overflow:hidden;
 `;
 
 export const HoverItem = styled.div`
@@ -48,12 +49,12 @@ export const MenuItem = styled.div`
     align-items: center;
     justify-content: flex-start;
     border: 2px solid white;
-    height: 5vh;
-    width: 28vh;
+    height: 45px;
+    width: 164px;
     border-radius: 35px;
 
     svg {
-        width: 3.7vh;
+        width: 34px;
         fill: #000;
     }
 

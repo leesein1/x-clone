@@ -67,8 +67,14 @@ export const TweetImage = styled.img`
 
 export const Actions = styled.div`
     display: flex;
-    gap: 12px;
-    margin-top: 25px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+`;
+
+export const ActionGroup = styled.div`
+    display: flex;
+    gap: 10px;
 `;
 
 export const ActionIcon = styled.div`
@@ -76,6 +82,8 @@ export const ActionIcon = styled.div`
     align-items: center;
     justify-content: center;
 `;
+
+
 
 export const IconButton = styled.button`
     width: 36px;

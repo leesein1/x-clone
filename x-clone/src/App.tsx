@@ -55,6 +55,33 @@ const Wrapper = styled.div`
     width:100%;
     display: flex;
     justify-content: center;
+    
+    /*일단 오른쪽 사라지게 하는거*/
+    #menu-right {
+      @media (max-width: 1838px) {
+        display: none;
+      }
+    }
+
+    /* 왼쪽 메뉴 프로필 부분*/
+    #left-profile {
+      @media (max-height: 320px) {
+        display:none;
+      }
+
+      @media (max-width: 1200px) {
+        display:none;
+      }
+    }
+
+
+  #menu-left .menu-span {
+    @media (max-width: 1200px) {
+      display: none;
+    }
+    
+  }
+    overflow: hidden;
 `;
 
 Modal.setAppElement("#root");

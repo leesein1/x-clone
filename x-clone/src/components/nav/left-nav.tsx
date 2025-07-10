@@ -11,7 +11,7 @@ export default function LeftNav({onLogOut}: {onLogOut: () => void;}) {
 
     return (
         <Menu id="menu-left">
-            <MenuInnerBox>
+            <MenuInnerBox id="left-menu-aNav">
                 <MenuLink to="/">
                     <MenuItem>
                         <HoverItem id="hover-logo">
@@ -29,7 +29,7 @@ export default function LeftNav({onLogOut}: {onLogOut: () => void;}) {
                                 <path fillRule="evenodd" clipRule="evenodd"
                                     d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z" />
                             </svg>
-                            <MenuSpan $active={location.pathname === "/"}>홈</MenuSpan>
+                            <MenuSpan className="menu-span" $active={location.pathname === "/"}>홈</MenuSpan>
                         </HoverItem>
                     </MenuItem>
                 </MenuLink>
@@ -40,7 +40,7 @@ export default function LeftNav({onLogOut}: {onLogOut: () => void;}) {
                             <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
                             </svg>
-                            <MenuSpan $active={location.pathname === "/profile"}>프로필</MenuSpan>
+                            <MenuSpan className="menu-span" $active={location.pathname === "/profile"}>프로필</MenuSpan>
                         </HoverItem>
                     </MenuItem>
                 </MenuLink>
@@ -53,12 +53,12 @@ export default function LeftNav({onLogOut}: {onLogOut: () => void;}) {
                             <path fillRule="evenodd" clipRule="evenodd"
                                 d="M19 10a.75.75 0 00-.75-.75H8.704l1.048-.943a.75.75 0 10-1.004-1.114l-2.5 2.25a.75.75 0 000 1.114l2.5 2.25a.75.75 0 101.004-1.114l-1.048-.943h9.546A.75.75 0 0019 10z" />
                         </svg>
-                        <MenuSpan>로그아웃</MenuSpan>
+                        <MenuSpan className="menu-span">로그아웃</MenuSpan>
                     </HoverItem>
                 </MenuItem>
             </MenuInnerBox>
 
-            <MenuInnerBox>
+            <MenuInnerBox id="left-profile">
                 {user && (
                     <MenuLink to="/profile">
                         <HoverItem>
