@@ -105,9 +105,7 @@ export const IconButton = styled.button`
     svg {
         width: 20px;
         height: 20px;
-        stroke-width: 1.5;
-        stroke: currentColor;
-        fill: none;
+
     }
 `;
 

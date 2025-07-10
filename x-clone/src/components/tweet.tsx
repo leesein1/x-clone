@@ -4,7 +4,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { useOutletContext } from "react-router-dom";
 import { ActionGroup, ActionIcon, Actions, ButtonRow, ContentColumn, DateText, Dot, Handle, Header, IconButton, Payload, ProfileColumn, ProfileImage, TweetImage, Username, Wrapper } from "./design/tweet-design";
-
+import TweetLike from "./tweet-likes"
 
 export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL, createdAtString, userHandle}: ITweet) {
     const { openModal, openEditModal } = useOutletContext<{
@@ -12,7 +12,7 @@ export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL
         openEditModal : (opts:{ content: string; tweetId: string}) => void;
     }>();
 
-    const user = auth.currentUser;
+    const user = auth.currentUser;  // 지금 로그인 한 user
 
     const onEdit = () => {
         openEditModal({
@@ -54,7 +54,7 @@ export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL
                 <Header>
                     <Username>{username}</Username>
                     <Handle>@{userHandle}</Handle>
-                    <Dot>·</Dot>
+                    <Dot>-</Dot>
                     <DateText>{createdAtString}</DateText>
                 </Header>
 
@@ -67,28 +67,21 @@ export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL
                         {/* 댓글 */}
                         <ActionIcon>
                         <IconButton>
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 12h.008v.008H7.5V12zm4.5 0h.008v.008H12V12zm4.5 0h.008v.008H16.5V12z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4.093-.88L3 20l1.21-3.628A8.962 8.962 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                            </svg>
+                        <svg data-slot="icon" fill="none" strokeWidth={1.5} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+                        </svg>
                         </IconButton>
                         </ActionIcon>
 
-                        {/* 리트윗 */}
-                        <ActionIcon>
-                        <IconButton>
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75A2.25 2.25 0 0014.25 4.5h-9A2.25 2.25 0 003 6.75v9A2.25 2.25 0 005.25 18h3.75m3 0h6.75a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-3.75" />
-                            </svg>
-                        </IconButton>
-                        </ActionIcon>
+                        {/* 좋아요 */}
+                        <TweetLike tweetId={id}/>
 
                         {/* 북마크 */}
                         <ActionIcon>
                         <IconButton>
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75v12.634a.75.75 0 01-1.204.611L12 17.25l-4.046 2.745a.75.75 0 01-1.204-.61V6.75A2.25 2.25 0 019 4.5h6a2.25 2.25 0 012.25 2.25z" />
-                            </svg>
+                        <svg data-slot="icon" fill="none" strokeWidth={1.5} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                        </svg>
                         </IconButton>
                         </ActionIcon>
                     </ActionGroup>

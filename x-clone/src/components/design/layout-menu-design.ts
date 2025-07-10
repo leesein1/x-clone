@@ -55,7 +55,6 @@ export const MenuItem = styled.div`
 
     svg {
         width: 34px;
-        fill: #000;
     }
 
     &:hover ${HoverItem} {
