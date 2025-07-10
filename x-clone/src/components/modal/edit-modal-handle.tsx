@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Modal from "react-modal";
-import styled, { createGlobalStyle } from "styled-components";
-import { auth, db } from "../firebase";
+import { auth, db } from "../../firebase";
 import {
   collection,
   getDocs,
@@ -9,88 +8,9 @@ import {
   runTransaction,
   where,
   doc,
+  updateDoc,
 } from "firebase/firestore";
-
-const GlobalModalStyle = createGlobalStyle`
-  .modal-overlay {
-    background: rgba(0,0,0,0.6);
-    z-index: 1000;
-    position: fixed;
-    top: 0; left: 0;
-    right: 0; bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .modal-content {
-    background: #fff;
-    border: none;
-    border-radius: 12px;
-    padding: 30px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    outline: none;
-    animation: fadeIn 0.2s ease-in-out;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
-`;
-
-const Title = styled.h2`
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  text-align: center;
-  color: #000;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 12px 15px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  box-sizing: border-box;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-const Button = styled.button`
-  width: 100%;
-  padding: 12px 0;
-  font-size: 16px;
-  font-weight: 600;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  color: #fff;
-  transition: background 0.2s ease-in-out;
-`;
-
-const CloseBtn = styled(Button)`
-    background: #6c757d;
-`;
-
-const TweetBtn = styled(Button)`
-    background: #1d9bf0;
-`;
-
-const ErrorMessage = styled.p`
-    color: red;
-    font-size: 14px;
-    margin-top: -12px;
-    margin-bottom: 10px;
-`;
+import { ButtonGroup, CloseBtn, ErrorMessage, GlobalModalStyle, Input, Title, TweetBtn } from "../design/modal-design";
 
 type Props = {
     title: string;
@@ -127,6 +47,17 @@ export default function EditModalHandle({ title, currentHandle, onClose }: Props
                 });
             });
 
+            const tweetsQuery = query(collection(db, "tweets"), where("userId", "==", user.uid));
+            const tweetSnapshots = await getDocs(tweetsQuery);
+
+            const updates = tweetSnapshots.docs.map((tweetDoc) =>
+              updateDoc(tweetDoc.ref, {
+                userHandle: newHandle.trim(),
+              })
+            );
+
+            await Promise.all(updates);
+            
             onClose();
             setNewHandle("");
             } catch (e) {

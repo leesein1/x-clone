@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../firebase";
-import { MenuInnerBox, Menu, SearchWrapper, SearchIcon, SearchInput, SearchResult, SearchBox} from "./layout-menu-design";
-import SearchResultItem from "./SearchResultItem";
-import RightSuggestComp from "./right-suggest";
+import { db } from "../../firebase";
+import { MenuInnerBox, Menu, SearchWrapper, SearchIcon, SearchInput, SearchResult, SearchBox} from "../design/layout-menu-design";
+import SearchResultItem from "../serach-result-item";
+import RightSuggestComp from "./right-nav-suggest";
 
 export default function RightNav() {
     const [focused, setFocused] = useState(false);

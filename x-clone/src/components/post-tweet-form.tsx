@@ -7,8 +7,7 @@ import { auth, db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { AttachFileButton, AttachFileInput, BottomRow, Form, LeftIcons, SubmitBtn, TextArea } from "./post-tweet-form-design";
 import EmojiButton from "./emoji-picker";
-
-
+import useUserInfo from "./user-info";
 
 export default function PostTweetForm() {
     const navigate = useNavigate(); 
@@ -17,6 +16,10 @@ export default function PostTweetForm() {
     const [file, setFile] = useState<File | null>(null); // 첨부 파일
 
     const textAreaRef = useRef<HTMLTextAreaElement>(null); // 이모지 첨부를 위해
+
+    const user = auth.currentUser;
+    const uid = user?.uid || null;
+    const userInfo = useUserInfo(uid);
     
     const insertEmoji = (emoji: string) => {
         const textarea = textAreaRef.current;
@@ -66,7 +69,8 @@ export default function PostTweetForm() {
         // 로딩 중 혹은 빈문자 이거나 길이가 너무 길면 트윗 막기
         if(isLoading || tweet === "" || tweet.length > 180) return;
         // 혹시라도 user 정보가 없는데 접근한경우 방지
-        const user = auth.currentUser;
+
+
         if (!user) {
             alert("로그인이 필요합니다.");
             navigate("/login");
@@ -79,8 +83,10 @@ export default function PostTweetForm() {
             const doc = await addDoc(collection(db, "tweets"), {
                 tweet,
                 createdAt: Date.now(),
-                username:user.displayName || "Anonymous",
-                userId : user.uid
+                username:userInfo?.name || "Anonymous",
+                userId : user.uid,
+                userPhotoURL: userInfo?.photoURL,
+                userHandle: userInfo?.handle
             });
             if (file) {
                 // 스토리지에 저장할 이름

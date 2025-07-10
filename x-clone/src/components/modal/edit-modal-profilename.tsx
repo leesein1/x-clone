@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import styled, { createGlobalStyle } from "styled-components";
 import { updateProfile } from "firebase/auth";
-import { auth, db } from "../firebase";
+import { auth, db } from "../../firebase";
 import { collection, getDocs, query, runTransaction, where } from "firebase/firestore";
 
 const GlobalModalStyle = createGlobalStyle`

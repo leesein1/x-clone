@@ -1,95 +1,18 @@
 // EditModal.tsx
 import React, { useState } from "react";
 import Modal from "react-modal";
-import styled, { createGlobalStyle } from "styled-components";
-import { auth, db, storage } from "../firebase";
+
+import { auth, db, storage } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { ButtonGroup, CloseBtn, FileButton, GlobalModalStyle, HiddenFileInput, TextArea, TweetBtn } from "../design/modal-design";
 
 interface EditModalProps {
     content: string;
     tweetId: string;
     onClose: () => void;
 }
-
-const GlobalModalStyle = createGlobalStyle`
-    .modal-overlay {
-        background: rgba(0,0,0,0.6);
-        z-index: 1000;
-    }
-    .modal-content {
-        position: absolute;
-        top:50%;
-        left:50%;
-        transform: translate(-50%, -50%);
-        width: 40%;
-        padding: 30px;
-        border-radius: 12px;
-        background: #fff;
-        border: none;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        outline: none;
-        min-width:400px;
-}
-`;
-
-
-const TextArea = styled.textarea`
-    width: 100%;
-    resize: vertical;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-bottom: 20px;
-
-`;
-
-const ButtonGroup = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-`;
-
-const Button = styled.button`
-    width: 100%;
-    padding: 10px 0;
-    font-size: 16px;
-    font-weight: 600;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    color: #fff;
-`;
-
-const CloseBtn = styled(Button)`
-    background: gray;
-`;
-
-const TweetBtn = styled(Button)`
-    background: #1d9bf0;
-
-`;
-
-const FileButton = styled.label`
-    background-color: #000;
-    color: #fff;
-    padding: 12px 0;
-    border-radius: 25px;
-    font-weight: 600;
-    font-size: 16px;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-`;
-
-const HiddenFileInput = styled.input`
-    display: none;
-`;
 
 export default function EditModal({content: initialContent, tweetId: initialTweetId, onClose,}: EditModalProps) {
     const [content, setContent] = useState(initialContent); // 새로운 content (tweet)

@@ -1,31 +1,14 @@
-import { HoverItem, Menu, MenuInnerBox, MenuItem, MenuLink, MenuSpan } from "./layout-menu-design";
-import { useEffect, useState } from "react";
+import { HoverItem, Menu, MenuInnerBox, MenuItem, MenuLink, MenuSpan } from "../design/layout-menu-design";
 import { useLocation } from "react-router-dom";
-import { doc, onSnapshot } from "firebase/firestore";
-import { auth, db } from "../firebase";
+import { auth } from "../../firebase";
+import useUserInfo from "../user-info"; 
 
 export default function LeftNav({onLogOut}: {onLogOut: () => void;}) {
     const location = useLocation();
     const user = auth.currentUser;
+    const uid = auth.currentUser?.uid || null;
+    const userInfo = useUserInfo(uid);
 
-    const [userHandle, setUserHandle] = useState<string | null>(null);
-
-    useEffect(() => {
-        const user = auth.currentUser;
-        if (!user) return;
-
-        const ref = doc(db, "users", user.uid);
-
-        const unsubscribe = onSnapshot(ref, (snap) => {
-            if (snap.exists()) {
-                const data = snap.data();
-                setUserHandle(data.handle || null);
-            }
-        });
-
-        return () => unsubscribe(); // cleanup
-    }, []);
-    
     return (
         <Menu id="menu-left">
             <MenuInnerBox>
@@ -80,7 +63,7 @@ export default function LeftNav({onLogOut}: {onLogOut: () => void;}) {
                     <MenuLink to="/profile">
                         <HoverItem>
                             <img
-                                src={user.photoURL || "./public/UserCircle.svg"}
+                                src={userInfo?.photoURL || "./public/UserCircle.svg"}
                                 alt="프로필"
                                 style={{
                                     width: 40,
@@ -90,9 +73,9 @@ export default function LeftNav({onLogOut}: {onLogOut: () => void;}) {
                                 }}
                             />
                             <div style={{ display: "flex", flexDirection: "column", marginLeft: 10, justifyContent :"center" }}>
-                                <strong>{user.displayName || "이름 없음"}</strong>
+                                <strong>{userInfo?.name || "이름 없음"}</strong>
                                 <span style={{ fontSize: "0.9rem", color: "gray" }}>
-                                    {userHandle ? `@${userHandle}` : ""}
+                                    {userInfo?.handle ? `@${userInfo?.handle}` : ""}
                                 </span>
                             </div>
                         </HoverItem>

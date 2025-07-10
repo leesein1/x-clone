@@ -2,12 +2,12 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import { auth } from "../firebase";
 import { useState } from "react";
-import ModalCoponent from "./modal-components";
-import EditModal from "./edit.modal";
-import EditModalProfileName from "./edit-modal-profilename";
-import LeftNav from "./left-nav";
-import RightNav from "./right-nav";
-import EditModalHandle from "./edit-modal-handle";
+import ModalCoponent from "./modal/edit-modal-logout";
+import EditModal from "./modal/edit-modal-tweet";
+import EditModalProfileName from "./modal/edit-modal-profilename";
+import LeftNav from "./nav/left-nav";
+import RightNav from "./nav/right-nav";
+import EditModalHandle from "./modal/edit-modal-handle";
 
 const Wrapper = styled.div`
     display: grid;

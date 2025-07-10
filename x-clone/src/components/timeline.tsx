@@ -1,10 +1,23 @@
-import { collection, limit, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  Timestamp,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { db } from "../firebase";
 import Tweet from "./tweet";
 import type { Unsubscribe } from "firebase/auth";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/ko";
 
+// dayjs 설정: 한글 + 상대 시간 지원
+dayjs.extend(relativeTime);
+dayjs.locale("ko");
 
 export interface ITweet {
     id: string;
@@ -13,6 +26,9 @@ export interface ITweet {
     userId: string;
     username: string;
     createdAt: number;
+    userPhotoURL: string;
+    createdAtString: string; // "5분 전" 또는 "07.10"
+    userHandle: string;
 }
 
 const Wrapper = styled.div`
@@ -21,47 +37,78 @@ const Wrapper = styled.div`
     flex-direction: column;
     overflow-y: scroll;
 
-    /* 스크롤바 숨기기 */
-    scrollbar-width: none;          /* Firefox */
-    -ms-overflow-style: none;       /* IE, Edge */
-    
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE, Edge */
+
     &::-webkit-scrollbar {
-    display: none;                /* Chrome, Safari */
+        display: none; /* Chrome, Safari */
+    }
 `;
 
 export default function Timeline() {
     const [tweets, setTweets] = useState<ITweet[]>([]);
 
     useEffect(() => {
-        let unsubscribe : Unsubscribe | null = null;
+        let unsubscribe: Unsubscribe | null = null;
 
         const fetchTweets = async () => {
-            const tweetsQuery = query(
-                collection(db, "tweets"),
-                orderBy("createdAt", "desc"),
-                limit(25)
-            );
+        const tweetsQuery = query(
+            collection(db, "tweets"),
+            orderBy("createdAt", "desc"),
+            limit(25)
+        );
 
-                // DB변동사항 감지 하는 query
-            unsubscribe =  onSnapshot(tweetsQuery, (snapshot) =>{
-                const tweetsArr: ITweet[] = snapshot.docs.map(doc => ({
-                    id: doc.id, // 꼭 넣어야 함!
-                    ...(doc.data() as Omit<ITweet, 'id'>),
-                }));
+        unsubscribe = onSnapshot(tweetsQuery, (snapshot) => {
+            const tweetsArr: ITweet[] = snapshot.docs.map((doc) => {
+            const raw = doc.data() as any;
 
-                setTweets(tweetsArr);
-            }); 
+            // createdAt 처리
+            let createdAtMs: number;
+            if (typeof raw.createdAt === "number") {
+                createdAtMs = raw.createdAt;
+            } else if (raw.createdAt instanceof Timestamp) {
+                createdAtMs = raw.createdAt.toMillis();
+            } else {
+                createdAtMs = Date.now();
+            }
+
+            // 1주일 넘으면 MM.DD, 아니면 ~전
+            const createdAtDay = dayjs(createdAtMs);
+            const diffInDays = dayjs().diff(createdAtDay, "day");
+            const createdAtString =
+                diffInDays >= 7
+                ? createdAtDay.format("MM.DD")
+                : createdAtDay.fromNow();
+
+                return {
+                    id: doc.id,
+                    tweet: raw.tweet || "",
+                    photo: raw.photo || "",
+                    userId: raw.userId || "",
+                    username: raw.username || "Unknown",
+                    userPhotoURL: raw.userPhotoURL || "",
+                    createdAt: createdAtMs,
+                    createdAtString,
+                    userHandle: raw.userHandle
+                };
+            });
+
+            setTweets(tweetsArr);
+        });
+    };
+
+    fetchTweets();
+
+    return () => {
+            if (unsubscribe) unsubscribe();
         };
-        fetchTweets();
-        // 컴포넌트 해제시 타임라인 이벤트 리스너 해제
-        return () => {
-            unsubscribe && unsubscribe();
-        }
     }, []);
 
     return (
         <Wrapper>
-            {tweets.map(tweet => <Tweet key={tweet.id}{...tweet}></Tweet>)}
+            {tweets.map((tweet) => (
+                <Tweet key={tweet.id} {...tweet} />
+            ))}
         </Wrapper>
     );
 }
