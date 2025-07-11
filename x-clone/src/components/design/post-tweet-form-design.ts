@@ -24,8 +24,11 @@ export const TextArea = styled.textarea`
     overflow: hidden;
     max-height: 75vh;
 
+
     &::placeholder {
-        color: #555;
+        font-size: 18px;
+        font-weight: 700; 
+        color: #999;
     }
 
     &:focus {
@@ -34,6 +37,20 @@ export const TextArea = styled.textarea`
         box-shadow: 0 0 0 2px #1d9bf0;
     }
 `;
+export const PostBox = styled.div`
+    display:flex;
+    gap:10px;
+`;
+
+export const PostTweetBox = styled.div`
+    width:90%;
+`;
+
+export const PostProfileImg = styled.div`
+    width:50px;
+    
+`;
+
 
 export const AttachFileButton = styled.label`
     display: flex;
@@ -60,6 +77,7 @@ export const AttachFileInput = styled.input`
 export const BottomRow = styled.div`
     display: flex;
     align-items: center;
+    margin-top:10px;
     justify-content: space-between;
 `;
 
@@ -70,7 +88,6 @@ export const LeftIcons = styled.div`
     svg {
         width: 26px;
         height: 26px;
-        fill: #1d9bf0;
         cursor: pointer;
 
         &:hover {

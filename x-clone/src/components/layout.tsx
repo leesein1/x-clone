@@ -25,7 +25,7 @@ const Wrapper = styled.div`
     }
 
     @media (max-width: 1200px) {
-        grid-template-columns: minmax(40px, 80px) minmax(100%, 1fr) 0px;
+        grid-template-columns: minmax(50px, 80px) minmax(100%, 1fr) 0px;
     }
 `;
 
@@ -35,7 +35,7 @@ const ContentBox = styled.div`
     box-sizing: border-box;
     border-right: 1px solid #eee;
     border-left: 1px solid #eee;
-    min-width:616px;
+    width:616px;
 `;
 
 export default function Layout() {

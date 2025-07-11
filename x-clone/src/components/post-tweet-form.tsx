@@ -5,7 +5,7 @@ import { addDoc, collection, updateDoc, doc as docRef } from "firebase/firestore
 import { useRef, useState } from "react";
 import { auth, db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { AttachFileButton, AttachFileInput, BottomRow, Form, LeftIcons, SubmitBtn, TextArea } from "./design/post-tweet-form-design";
+import { AttachFileButton, AttachFileInput, BottomRow, Form, LeftIcons, PostBox, PostProfileImg, PostTweetBox, SubmitBtn, TextArea } from "./design/post-tweet-form-design";
 import EmojiButton from "./emoji-picker";
 import useUserInfo from "./user-info";
 
@@ -119,39 +119,47 @@ export default function PostTweetForm() {
 
     return (
         <Form onSubmit={onSubmit}>
-            <TextArea
-                ref={textAreaRef}
-                value={tweet}
-                onChange={onChange}
-                onInput={autoResize}
-                placeholder="무슨 일이 있으신가요?"
-                rows={1}
-            />
+            <PostBox>
+                <PostProfileImg>
+                    {user && (
+                        <img
+                            src={userInfo?.photoURL || "./public/UserCircle.svg"}
+                            alt="프로필"
+                            style={{
+                                width: 48,
+                                height: 48,
+                                borderRadius: "50%",
+                                objectFit: "cover"
+                            }}
+                        />
+                    )}
+                </PostProfileImg>
+                <PostTweetBox>
+                        <TextArea
+                            ref={textAreaRef}
+                            value={tweet}
+                            onChange={onChange}
+                            onInput={autoResize}
+                            placeholder="무슨 일이 있으신가요?"
+                            rows={1}
+                        />
+                        <BottomRow>
+                        <LeftIcons>
 
-            <BottomRow>
-                <LeftIcons>
+                        <AttachFileButton htmlFor="file">
+                            <svg dataS-slot="icon" fill="none" strokeWidth={1.5} stroke="#1d9bf0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                            </svg>
+                        </AttachFileButton>
 
-                <AttachFileButton htmlFor="file">
-                <svg
-                    data-slot="icon"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                >
-                    <path
-                    clipRule="evenodd"
-                    fillRule="evenodd"
-                    d="M1 5.25A2.25 2.25 0 0 1 3.25 3h13.5A2.25 2.25 0 0 1 19 5.25v9.5A2.25 2.25 0 0 1 16.75 17H3.25A2.25 2.25 0 0 1 1 14.75v-9.5Zm1.5 5.81v3.69c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75v-2.69l-2.22-2.219a.75.75 0 0 0-1.06 0l-1.91 1.909.47.47a.75.75 0 1 1-1.06 1.06L6.53 8.091a.75.75 0 0 0-1.06 0l-2.97 2.97ZM12 7a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
-                    />
-                </svg>
-                </AttachFileButton>
+                        <AttachFileInput onChange={onFileChange} id="file" type="file" accept="image/*" />
+                        <EmojiButton onSelect={insertEmoji} />
+                        </LeftIcons>
+                        <SubmitBtn type="submit" value={isLoading ? "Posting..." : "게시하기"} />
+                    </BottomRow>
+                </PostTweetBox>
+            </PostBox>
 
-                <AttachFileInput onChange={onFileChange} id="file" type="file" accept="image/*" />
-                <EmojiButton onSelect={insertEmoji} />
-                </LeftIcons>
-                <SubmitBtn type="submit" value={isLoading ? "Posting..." : "게시하기"} />
-            </BottomRow>
         </Form>
     );
 }

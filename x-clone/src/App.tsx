@@ -11,6 +11,7 @@ import LoadingScreen from "./components/loading-screen";
 import { auth } from "./firebase";
 import ProtecteRoute from "./components/protected-route";
 import Modal from "react-modal";
+import TweetSelect from "./components/tweet/tweet-select"
 
 const router = createBrowserRouter([
   { 
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: 'profile',
         element: <ProtecteRoute><Profile/></ProtecteRoute>
+      },
+      {
+        path: 'tweet/:tweetId',
+        element: <ProtecteRoute><TweetSelect /></ProtecteRoute>
       }
     ]
   },

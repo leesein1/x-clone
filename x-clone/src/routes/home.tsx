@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PostTweetForm from "../components/post-tweet-form";
-import Timeline from "../components/timeline";
+import Timeline from "../components/tweet/timeline";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useOutletContext } from "react-router-dom";

@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
 import { collection, limit, onSnapshot, orderBy, query, where } from "firebase/firestore";
-import Tweet from "../components/tweet";
-import type { ITweet } from "../components/timeline";
+import Tweet from "../components/tweet/tweet";
+import type { ITweet } from "../components/tweet/timeline";
 import { useOutletContext } from "react-router-dom";
 
 const Wrapper = styled.div`

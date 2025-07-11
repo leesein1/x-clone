@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { auth, db } from "../firebase";
+import { auth, db } from "../../firebase";
 import { doc, getDoc, setDoc, deleteDoc, onSnapshot, collection } from "firebase/firestore";
-import { ActionIcon, IconButton } from "./design/tweet-design";
+import { ActionIcon, IconButton } from "../design/tweet-design";
 
 interface TweetLikeProps {
     tweetId: string;
@@ -42,8 +42,8 @@ export default function TweetLike({ tweetId }: TweetLikeProps) {
     };
 
     return (
-        <ActionIcon onClick={toggleLike}>
-            <IconButton>
+        <ActionIcon onClick={(e) => e.stopPropagation()}>
+            <IconButton onClick={toggleLike}>
                 {isLiked ? (
                 <svg
                     fill="red"

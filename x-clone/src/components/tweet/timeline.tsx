@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { db, auth } from "../firebase";
+import { db, auth } from "../../firebase";
 import Tweet from "./tweet";
 import type { Unsubscribe } from "firebase/auth";
 import dayjs from "dayjs";
@@ -26,7 +26,7 @@ export interface ITweet {
     tweet: string;
     userId: string;
     username: string;
-    createdAt: number;
+    createdAt: number | { toDate: () => Date };
     userPhotoURL: string;
     createdAtString: string;
     userHandle: string;
