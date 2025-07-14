@@ -51,7 +51,18 @@ export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL
                         <TweetLike tweetId={id}/>
 
                         {/* 북마크 */}
-                        <TweetBookmark />
+                        <TweetBookmark
+                        tweetId={id}
+                        tweetData={{
+                            username,
+                            tweet,
+                            userId,
+                            userHandle,
+                            createdAtString,
+                            photo: photo ?? null,
+                            userPhotoURL: userPhotoURL ?? null,
+                        }}
+                        />
                     </ActionGroup>
 
                     

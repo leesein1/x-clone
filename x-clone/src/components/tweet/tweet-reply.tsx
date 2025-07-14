@@ -58,6 +58,7 @@ export default function TweetReply({ tweetId }: { tweetId: string }) {
                 userHandle:userInfo?.handle,
                 userPhotoURL:userInfo?.photoURL,
                 createdAt: serverTimestamp(),
+                userName: userInfo?.name
             });
 
             setReply(""); // 초기화

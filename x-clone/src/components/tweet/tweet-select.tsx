@@ -100,10 +100,10 @@ export default function TweetSelect() {
 
                                 {/* 삭제 */}
                                 <TweetDelete
-                                tweetId={tweetId!}
-                                userId={tweet.userId}
-                                photo={tweet.photo}
-                                openModal={openModal}
+                                    tweetId={tweetId!}
+                                    userId={tweet.userId}
+                                    photo={tweet.photo}
+                                    openModal={openModal}
                                 />
                             </>
                         )}

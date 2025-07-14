@@ -8,6 +8,7 @@ import EditModalProfileName from "./modal/edit-modal-profilename";
 import LeftNav from "./nav/left-nav";
 import RightNav from "./nav/right-nav";
 import EditModalHandle from "./modal/edit-modal-handle";
+import EditReplyModal from "./modal/edit-modal-reply";
 
 const Wrapper = styled.div`
     display: grid;
@@ -66,7 +67,12 @@ export default function Layout() {
         currentHandle: "",
     });
 
-
+    const [editReply, setEditReply] = useState({
+        isOpen: false,
+        content: "",
+        replyId: "",
+        tweetId: ""
+    });
 
     const onLogOut = () => {
         setModalInfo({
@@ -108,6 +114,20 @@ export default function Layout() {
         });
     };
 
+    const openReplyModal = (options: {
+        isOpen: true;
+        content: string;
+        replyId: "";
+        tweetId: "";
+    }) => {
+        setEditReply({
+            isOpen: true,
+            content: options.content,
+            replyId: options.replyId,
+            tweetId: options.tweetId
+        });
+    };
+
     const openModalProfileName = (options: {
         isOpen: true;
         title: string;
@@ -137,17 +157,17 @@ export default function Layout() {
             <LeftNav onLogOut={onLogOut} />
             
             <ContentBox>
-                <Outlet context={{ openModal, openEditModal, openModalProfileName, openModalHandle }} />
+                <Outlet context={{ openModal, openEditModal, openModalProfileName, openModalHandle, openReplyModal }} />
             </ContentBox>
 
             <RightNav />
 
-            {modalInfo.isOpen && (
-                <ModalCoponent
-                    title={modalInfo.title}
-                    message={modalInfo.message}
-                    onConfirm={modalInfo.onConfirm}
-                    onClose={() => setModalInfo(prev => ({ ...prev, isOpen: false }))}
+            {editReply.isOpen && (
+                <EditReplyModal
+                    content={editReply.content}
+                    replyId={editReply.replyId}
+                    tweetId={editReply.tweetId}
+                    onClose={() => setEditReply(prev => ({ ...prev, isOpen: false }))}
                 />
             )}
 
@@ -156,6 +176,15 @@ export default function Layout() {
                     content={editModal.content}
                     tweetId={editModal.tweetId}
                     onClose={() => setEditModal(prev => ({ ...prev, isOpen: false }))}
+                />
+            )}
+
+            {modalInfo.isOpen && (
+                <ModalCoponent
+                    title={modalInfo.title}
+                    message={modalInfo.message}
+                    onConfirm={modalInfo.onConfirm}
+                    onClose={() => setModalInfo(prev => ({ ...prev, isOpen: false }))}
                 />
             )}
 

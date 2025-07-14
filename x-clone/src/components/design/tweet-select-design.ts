@@ -170,3 +170,10 @@ export const SubBox = styled.div`
     display: flex;
     justify-content: space-between;
 `;
+
+export const TweetReplyDelete = styled.div``;
+
+export const MyBox = styled.div`
+    display: flex;
+    gap:10px;
+`;
