@@ -88,7 +88,22 @@ export default function TweetSelect() {
                         <TweetReply tweetId={tweetId!}/>
                         {/* 좋아요 */}
                         <TweetLike tweetId={tweetId!}/>
-                        <TweetBookmark />
+                        {/* 북마크 기능*/}
+                        <TweetBookmark
+                            tweetId={tweetId!}
+                            tweetData={{
+                                username: tweet.username,
+                                tweet: tweet.tweet,
+                                userId: tweet.userId,
+                                userHandle: tweet.userHandle,
+                                createdAtString:
+                                    typeof tweet.createdAt === "object" && "toDate" in tweet.createdAt
+                                        ? new Date(tweet.createdAt.toDate()).toLocaleString()
+                                        : new Date(tweet.createdAt).toLocaleString(),
+                                photo: tweet.photo ?? null,
+                                userPhotoURL: tweet.userPhotoURL ?? null,
+                            }}
+                        />
                         {user?.uid === tweet.userId && (
                             <>
                                 {/* 수정 */}
