@@ -64,28 +64,65 @@ export const ActionIcon = styled.div`
 
 export const ReplyBox = styled.div`
     display: flex;
-    gap: 8px;
+    gap: 18px;
     border-top: 1px solid #eee;
     padding-top: 12px;
     input {
-        flex: 1;
         border: none;
         outline: none;
     }
-    button {
-        background: #1d9bf0;
-        color: white;
-        border-radius: 9999px;
-        padding: 6px 12px;
-        border: none;
-        cursor: pointer;
+`;
+
+export const SelectItemBox = styled.div`
+    button{
+        width:26px;
+        padding:0px;
     }
+`;
+
+export const ReplyTextArea = styled.textarea`
+    width: 89%;
+    resize: none;
+    font-size: 15px;
+    padding: 8px 0;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    line-height: 1.5;
+    overflow: hidden;
+
+    &::placeholder {
+        font-size: 16px;         
+        font-weight: 900;        
+        color: #888;            
+    }
+`;
+
+export const ReplySubmitButton = styled.button`
+    background: #1d9bf0;
+    color: white;
+    border-radius: 9999px;
+    padding: 5px 12px;
+    border: none;
+    cursor: pointer;
+    font-size:16px;
+    font-weight:600;
+
+    &:disabled {
+        background-color: gray;
+        cursor: default;
+    }
+`;
+
+
+
+export const InputBox = styled.div`
+    width:100%;
 `;
 
 export const Headers = styled.div`
     svg{
         width:30px;
-
     }
     gap:25px;
     display: flex;
@@ -127,4 +164,9 @@ export const ScrollBox = styled.div`
     }
     -ms-overflow-style: none;  /* IE/Edge */
     scrollbar-width: none;     /* Firefox */
+`;
+
+export const SubBox = styled.div`
+    display: flex;
+    justify-content: space-between;
 `;

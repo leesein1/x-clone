@@ -3,7 +3,7 @@ import { auth } from "../../firebase";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { ActionGroup, Actions, ButtonRow, ContentColumn, DateText, Dot, Handle, Header, Payload, ProfileColumn, ProfileImage, TweetImage, Username, Wrapper } from "../design/tweet-design";
 import TweetLike from "./tweet-likes"
-import TweetReply from "./tweet-reply";
+import TweetReply from "./tweet-reply-btn";
 import TweetDelete from "./tweet-delete";
 import TweetEdit from "./tweet-edit";
 import TweetBookmark from "./tweet-bookmark";
@@ -45,7 +45,7 @@ export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL
                 <Actions>
                     <ActionGroup>
                         {/* 댓글 */}
-                        <TweetReply />
+                        <TweetReply tweetId={id}/>
 
                         {/* 좋아요 */}
                         <TweetLike tweetId={id}/>

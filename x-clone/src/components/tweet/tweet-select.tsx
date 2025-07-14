@@ -1,21 +1,23 @@
 import { useOutletContext, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import type { ITweet } from "./timeline";
 import {
     Wrapper, ProfileRow, ProfileImage, Username, Handle, DateText,
-    TweetContent, TweetMedia, MetaDataRow, ActionRow, ActionIcon, ReplyBox,
+    TweetContent, TweetMedia, MetaDataRow, ActionRow,
     Headers,
     HeaderText,
     BackImg,
-    ScrollBox
+    ScrollBox,
 } from "../design/tweet-select-design";
 import TweetLike from "./tweet-likes";
 import { auth, db } from "../../firebase";
-import TweetReply from "./tweet-reply";
+import TweetReply from "./tweet-reply-btn";
 import TweetEdit from "./tweet-edit";
 import TweetDelete from "./tweet-delete";
 import TweetBookmark from "./tweet-bookmark";
+import ReplyBox from "./tweet-reply"
+import TweetReplyList from "./tweet-reply-list";
 
 export default function TweetSelect() {
     const { openModal, openEditModal } = useOutletContext<{
@@ -25,21 +27,23 @@ export default function TweetSelect() {
     
     const { tweetId } = useParams();
     const [tweet, setTweet] = useState<ITweet | null>(null);
-
+    
     const user = auth.currentUser;
     
     useEffect(() => {
-        const fetchTweet = async () => {
-            if (!tweetId) return;
-            const ref = doc(db, "tweets", tweetId);
-            const snap = await getDoc(ref);
+        if (!tweetId) return;
+
+        const ref = doc(db, "tweets", tweetId);
+        const unsubscribe = onSnapshot(ref, (snap) => {
             if (snap.exists()) {
                 const data = snap.data() as Omit<ITweet, "id">;
                 setTweet({ ...data, id: snap.id });
             }
-        };
-        fetchTweet();
-    }, [tweet]);
+        });
+
+        return () => unsubscribe();
+    }, [tweetId]);
+
 
     if (!tweet) return <div>로딩 중...</div>;
 
@@ -81,7 +85,7 @@ export default function TweetSelect() {
                     
                     <ActionRow>
                         {/* 댓글 */}
-                        <TweetReply />
+                        <TweetReply tweetId={tweetId!}/>
                         {/* 좋아요 */}
                         <TweetLike tweetId={tweetId!}/>
                         <TweetBookmark />
@@ -107,10 +111,8 @@ export default function TweetSelect() {
                     </ActionRow>
 
                     {/* 댓글 입력 */}
-                    <ReplyBox>
-                        <input placeholder="답글 게시하기" />
-                        <button>답글</button>
-                    </ReplyBox>
+                    <ReplyBox tweetId= {tweetId!}/>
+                    <TweetReplyList tweetId={tweetId!} />
                 </ScrollBox>
             </Wrapper>
         );
