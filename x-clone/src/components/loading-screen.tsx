@@ -35,7 +35,7 @@ const Logo = styled.img`
 export default function LoadingScreen() {
         return (
             <Wrapper>
-            <Logo src="./public/x-social-media-black-icon.svg" alt="loading" />
+                <Logo src="./public/x-social-media-black-icon.svg" alt="loading" />
             </Wrapper>
         );
     }

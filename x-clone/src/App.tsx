@@ -93,14 +93,17 @@ Modal.setAppElement("#root");
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  // FireBase 로그인 진행 중 대기시간 벌기위한 화면
+
   const init = async () => {
-    //wait for firebase auth to initialize
-    //끝나면 로딩 false로 변경
-    //현재는 firebase auth를 사용하지 않기 때문에 바로 false로 변경
-    await auth.authStateReady();
-    setIsLoading(false)
-  }
+    const start = Date.now();
+    await auth.authStateReady(); // Firebase Auth 초기화
+    const duration = Date.now() - start;
+    const remain = Math.max(400 - duration, 0);
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, remain);
+  };
 
   useEffect(() => {
     init();
@@ -111,7 +114,8 @@ function App() {
       <GlobalStyle />
       {isLoading ? <LoadingScreen /> : <RouterProvider router={router} />}
     </Wrapper>
-  )
+  );
 }
+
 
 export default App
