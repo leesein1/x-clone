@@ -60,7 +60,7 @@ export default function Timeline({ mode }: TimelineProps) {
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [expectedImageCount, setExpectedImageCount] = useState(0);
-    const [imageLoadCount, setImageLoadCount] = useState(0);
+    const [, setImageLoadCount] = useState(0);
 
     const { ref, inView } = useInView({
         root: null, // 브라우저 뷰포트 기준

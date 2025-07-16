@@ -42,7 +42,7 @@ export default function Profile() {
     const [tweets, setTweets] = useState<ITweet[]>([]);
     const [loading, setLoading] = useState(true);
     const [expectedImageCount, setExpectedImageCount] = useState(0);
-    const [imageLoadCount, setImageLoadCount] = useState(0);
+    const [, setImageLoadCount] = useState(0);
     const [hasMore, setHasMore] = useState(true);
 
     const { openModalProfileName } = useOutletContext<{
