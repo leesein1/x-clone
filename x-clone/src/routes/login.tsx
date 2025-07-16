@@ -15,8 +15,8 @@ export default function CreateAccount() {
     const [isLoading, setIsLoading] = useState(false);
 
     // 로그인에 필요한 정보들을 관리하기 위한 state
-    const [email, setEmail] = useState(""); // 이메일을 관리하기 위한 state
-    const [password, setPassword] = useState(""); // 비밀번호를 관리하기 위한 state
+    const [email, setEmail] = useState("test@xclone.com");
+    const [password, setPassword] = useState("123456");
     const [error, setError] = useState(""); // 에러 메시지를 관리하기 위한 state
 
 
@@ -41,9 +41,9 @@ export default function CreateAccount() {
             return;
         }
         try {
-        setIsLoading(true); // 로딩 시작
-        await signInWithEmailAndPassword(auth, email, password);
-        navigate("/"); // 성공 시 홈으로 이동
+            setIsLoading(true); // 로딩 시작
+            await signInWithEmailAndPassword(auth, email, password);
+            navigate("/"); // 성공 시 홈으로 이동
         } catch (error) {
         if (error instanceof FirebaseError) {
             console.log(error.code)   
