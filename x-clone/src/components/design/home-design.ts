@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 export const Wrapper = styled.div`
     display: grid;
@@ -54,6 +54,8 @@ export const Tab = styled.div`
     }
 `;
 
+export const RenderBox = styled.div``;
+
 export const TabText = styled.div.withConfig({shouldForwardProp: (prop) => prop !== "active"})<{ active?: boolean }>`
     display: flex;
     align-items: center;
@@ -74,4 +76,35 @@ export const TabText = styled.div.withConfig({shouldForwardProp: (prop) => prop 
         transition: background-color 0.2s ease-in-out;
         border-radius: 2px;
     }
+`;
+
+export const spin = keyframes`
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+`;
+
+export const PayLoader = styled.div`
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(29, 155, 240, 0.2); /* 연한 파랑 */
+    border-top: 4px solid #1d9bf0; /* 트위터 파랑 */
+    border-radius: 50%;
+    animation: ${spin} 1s linear infinite;
+    margin: 80px auto; /* 중앙 정렬 */
+`;
+
+export const LoaderWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 0;
+    height:80vh;
+`;
+
+export const LoaderWrapper2 = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 0;
+    height:100vh;
 `;

@@ -3,14 +3,14 @@ import { auth, db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
 import {
-  collection,
-  limit,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-  doc,
-  getDoc,
+    collection,
+    limit,
+    onSnapshot,
+    orderBy,
+    query,
+    where,
+    doc,
+    getDoc,
 } from "firebase/firestore";
 import Tweet from "../components/tweet/tweet";
 import type { ITweet } from "../components/tweet/timeline";
@@ -26,6 +26,9 @@ import {
     Wrapper,
 } from "../components/design/profile-design";
 import {
+    LoaderWrapper2,
+    PayLoader,
+    RenderBox,
     StickyBox2,
     Tab,
     TabBox,
@@ -40,30 +43,16 @@ export default function Profile() {
     const [activeTab, setActiveTab] = useState<"tweet" | "bookmark">("tweet");
     const [avatar, setAvatar] = useState<string | null>(null);
     const [tweets, setTweets] = useState<ITweet[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [expectedImageCount, setExpectedImageCount] = useState(0);
-    const [, setImageLoadCount] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
-
+    const [isLoading, setIsLoading] = useState(true);
     const { openModalProfileName } = useOutletContext<{
         openModalProfileName: (opts: { title: string; currentName: string }) => void;
     }>();
 
-    const handleImageLoad = () => {
-        setImageLoadCount((prev) => {
-        const next = prev + 1;
-        if (next === expectedImageCount) {
-            setLoading(false);
-        }
-        return next;
-        });
-    };
-
     useEffect(() => {
         if (sUserInfo?.photoURL) {
-        setAvatar(sUserInfo.photoURL);
+            setAvatar(sUserInfo.photoURL);
         } else {
-        setAvatar(null);
+            setAvatar(null);
         }
     }, [sUserInfo?.photoURL]);
 
@@ -76,10 +65,6 @@ export default function Profile() {
 
     useEffect(() => {
         if (!targetId) return;
-
-        setLoading(true);
-        setExpectedImageCount(0);
-        setImageLoadCount(0);
 
         if (activeTab === "tweet") {
         const tweetQuery = query(
@@ -95,15 +80,14 @@ export default function Profile() {
             ...(doc.data() as Omit<ITweet, "id">),
             }));
             setTweets(tweets);
-
-            const count = tweets.filter((t) => !!t.photo).length;
-            setExpectedImageCount(count);
-            if (count === 0) setLoading(false);
-
-            setHasMore(tweets.length >= 25);
         });
+        
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 1400);
 
         return () => unsubscribe();
+
         }
 
         if (activeTab === "bookmark" && user?.uid === targetId) {
@@ -125,16 +109,11 @@ export default function Profile() {
             const resolved = await Promise.all(tweetPromises);
             const filtered = resolved.filter((t): t is ITweet => t !== null);
             setTweets(filtered);
-
-            const count = filtered.filter((t) => !!t.photo).length;
-            setExpectedImageCount(count);
-            if (count === 0) setLoading(false);
-
-            setHasMore(filtered.length >= 25);
         });
 
         return () => unsubscribe();
         }
+
     }, [targetId, activeTab]);
 
     const onAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,35 +159,32 @@ export default function Profile() {
             )}
             </Name>
         </StickyBox2>
+        <RenderBox>
+            {isLoading &&(
+                <LoaderWrapper2>
+                    <PayLoader />
+                </LoaderWrapper2>
+            )}
 
-        {sUserInfo.id === user?.uid && (
+            {sUserInfo.id === user?.uid && (
             <TabBox>
-            <Tab onClick={() => setActiveTab("tweet")}> 
-                <TabText active={activeTab === "tweet"}>게시물</TabText>
-            </Tab>
-            <Tab onClick={() => setActiveTab("bookmark")}> 
-                <TabText active={activeTab === "bookmark"}>북마크</TabText>
-            </Tab>
-            </TabBox>
-        )}
+                <Tab onClick={() => setActiveTab("tweet")}> 
+                    <TabText active={activeTab === "tweet"}>게시물</TabText>
+                </Tab>
+                <Tab onClick={() => setActiveTab("bookmark")}> 
+                    <TabText active={activeTab === "bookmark"}>북마크</TabText>
+                </Tab>
+                </TabBox>
+            )}
 
-        <Tweets>
-            {tweets.map((tweet) => (
-            <Tweet key={tweet.id} {...tweet} onImageLoad={handleImageLoad} />
-            ))}
-        </Tweets>
 
-        {loading && (
-            <div style={{ textAlign: "center", padding: "20px", color: "#999" }}>
-            🔄 불러오는 중...
-            </div>
-        )}
-
-        {!hasMore && !loading && (
-            <div style={{ textAlign: "center", color: "#aaa", padding: "20px" }}>
-            😥 더 이상 불러올 트윗이 없어요.
-            </div>
-        )}
+            <Tweets>
+                {tweets.map((tweet) => (
+                    <Tweet key={tweet.id} {...tweet}/>
+                ))}
+            </Tweets>
+        </RenderBox>
+        
         </Wrapper>
     );
 }

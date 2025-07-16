@@ -43,13 +43,12 @@ export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL
                 </Header>
 
                 <Payload>{tweet}</Payload>
-
                 {photo && (
-                    <TweetImage
+                    <img
+                        data-tweet-image
                         src={photo}
                         alt="트윗 이미지"
-                        onLoad={onImageLoad}
-                        onError={onImageLoad}
+                        style={{ maxWidth: "100%", borderRadius: 8 }}
                     />
                 )}
 
