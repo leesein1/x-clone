@@ -4,7 +4,7 @@ import Timeline from "../components/tweet/timeline";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useOutletContext } from "react-router-dom";
-import { Tab, TabBox, TabText, Wrapper } from "../components/design/home-design";
+import { StickyBox, Tab, TabBox, TabText, Wrapper } from "../components/design/home-design";
 
 
 export default function Home() {
@@ -39,16 +39,18 @@ export default function Home() {
 
     return (
         <Wrapper>
-            <TabBox>
-                <Tab onClick={() => setActiveTab("suggest")}>
-                    <TabText active={activeTab === "suggest"}>추천</TabText>
-                </Tab>
-                <Tab onClick={() => setActiveTab("following")}>
-                    <TabText active={activeTab === "following"}>팔로잉</TabText>
-                </Tab>
-            </TabBox>
+            <StickyBox>
+                <TabBox>
+                    <Tab onClick={() => setActiveTab("suggest")}>
+                        <TabText active={activeTab === "suggest"}>추천</TabText>
+                    </Tab>
+                    <Tab onClick={() => setActiveTab("following")}>
+                        <TabText active={activeTab === "following"}>팔로잉</TabText>
+                    </Tab>
+                </TabBox>
 
-            <PostTweetForm />
+                <PostTweetForm />
+            </StickyBox>
             {/*여기가 이제 타임라인 분기 점*/}
             <Timeline mode={activeTab}/>
         </Wrapper>

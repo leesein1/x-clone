@@ -8,7 +8,11 @@ import TweetDelete from "./tweet-delete";
 import TweetEdit from "./tweet-edit";
 import TweetBookmark from "./tweet-bookmark";
 
-export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL, createdAtString, userHandle}: ITweet) {
+interface TweetProps extends ITweet {
+  onImageLoad?: () => void; // 👈 이미지 로딩 후 호출할 함수
+}
+
+export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL, createdAtString, userHandle, onImageLoad}: TweetProps) {
     const { openModal, openEditModal } = useOutletContext<{
         openModal: (opts: { title: string; message: string; onConfirm?: () => void }) => void;
         openEditModal : (opts:{ content: string; tweetId: string}) => void;
@@ -40,7 +44,14 @@ export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL
 
                 <Payload>{tweet}</Payload>
 
-                {photo && <TweetImage src={photo} alt="트윗 이미지" />}
+                {photo && (
+                    <TweetImage
+                        src={photo}
+                        alt="트윗 이미지"
+                        onLoad={onImageLoad}
+                        onError={onImageLoad}
+                    />
+                )}
 
                 <Actions>
                     <ActionGroup>

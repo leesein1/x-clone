@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
     height: 100vh;
 
     scrollbar-width: none;
-    -ms-overflow-style: none;
+        -ms-overflow-style: none;
     &::-webkit-scrollbar {
         display: none;
     }
@@ -17,6 +17,27 @@ export const Wrapper = styled.div`
 export const TabBox = styled.div`
     display: flex;
     width:100%;
+`;
+
+export const StickyBox = styled.div`
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white; /* 배경색 없으면 겹쳐 보여서 꼭 넣어 */
+    border-bottom: 1px solid #eee; /* 선택사항 */
+`;
+
+export const StickyBox2 = styled.div`
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white; /* 배경색 없으면 겹쳐 보여서 꼭 넣어 */
+    border-bottom: 1px solid #eee; /* 선택사항 */
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
 `;
 
 export const Tab = styled.div`
