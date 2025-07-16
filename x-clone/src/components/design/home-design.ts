@@ -16,11 +16,12 @@ export const Wrapper = styled.div`
 
 export const TabBox = styled.div`
     display: flex;
+    width:100%;
 `;
 
 export const Tab = styled.div`
     display: flex;
-    width: 50%;
+    width: 100%;
     height: 5vh;
     justify-content: center;
     align-items: center;

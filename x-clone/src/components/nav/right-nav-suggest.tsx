@@ -9,6 +9,7 @@ import {
     SuggestUserText,
 } from "../design/layout-menu-design";
 import { useFollowToggle } from "../use-follow-toggle"; //
+import { useNavigate } from "react-router-dom";
 
 interface User {
     id: string;
@@ -21,6 +22,10 @@ interface User {
 export default function RightSuggest() {
     const [users, setUsers] = useState<User[]>([]);
     const currentUser = auth.currentUser;
+    const navigate = useNavigate();
+    const goProfile = (uid: string) => {
+        navigate(`/profile/${uid}`);
+    };
 
     // followToggle 훅 사용
     const followToggle = useFollowToggle(currentUser?.uid ?? "", (targetId, newVal) => {
@@ -76,7 +81,7 @@ export default function RightSuggest() {
             <SetSuggestUserBox>
                 <SuggestUserText>팔로우 추천</SuggestUserText>
                 {users.map((user) => (
-                    <FollowUserItem key={user.id}>
+                    <FollowUserItem key={user.id} onClick={() => goProfile(user.id)}>
                         <img
                         src={user.photoURL || "/UserCircle.svg"}
                         alt="프로필"
@@ -85,21 +90,21 @@ export default function RightSuggest() {
                         }}
                     />
 
-                    <div className="info">
-                        <strong>{user.name}</strong>
-                        <span>@{user.handle}</span>
-                    </div>
+                        <div className="info">
+                            <strong>{user.name}</strong>
+                            <span>@{user.handle}</span>
+                        </div>
 
-                    <FollowButton
-                        onClick={followToggle(user.id, user.isFollowing ?? false)}
-                        style={{
-                            backgroundColor: user.isFollowing ? "#e5e5e5" : "#000",
-                            color: user.isFollowing ? "#000" : "#fff",
-                            border: "none",
-                            cursor: "pointer",
-                        }}
-                    >{user.isFollowing ? "팔로잉" : "팔로우"}</FollowButton>
-                </FollowUserItem>
+                        <FollowButton
+                            onClick={followToggle(user.id, user.isFollowing ?? false)}
+                            style={{
+                                backgroundColor: user.isFollowing ? "#e5e5e5" : "#000",
+                                color: user.isFollowing ? "#000" : "#fff",
+                                border: "none",
+                                cursor: "pointer",
+                            }}
+                        >{user.isFollowing ? "팔로잉" : "팔로우"}</FollowButton>
+                    </FollowUserItem>
                 ))}
             </SetSuggestUserBox>
         </RightSuggestBox>

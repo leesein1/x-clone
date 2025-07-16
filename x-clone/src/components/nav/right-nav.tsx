@@ -9,6 +9,7 @@ export default function RightNav() {
     const [focused, setFocused] = useState(false);
     const [searchResults, setSearchResults] = useState<any[]>([]);
 
+
     const onSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.trim();
 
@@ -82,6 +83,7 @@ export default function RightNav() {
                                 name={user.name}
                                 handle={user.handle}
                                 photoURL={user.photoURL}
+                                uid={user.uid}
                             />
                             ))
                         )}

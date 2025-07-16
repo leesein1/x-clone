@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import { auth } from "../firebase";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ModalCoponent from "./modal/edit-modal-logout";
 import EditModal from "./modal/edit-modal-tweet";
 import EditModalProfileName from "./modal/edit-modal-profilename";
@@ -152,12 +152,26 @@ export default function Layout() {
         });
     };
 
+    const outletContext = useMemo(() => ({
+        openModal,
+        openEditModal,
+        openModalProfileName,
+        openModalHandle,
+        openReplyModal
+        }), [
+        openModal,
+        openEditModal,
+        openModalProfileName,
+        openModalHandle,
+        openReplyModal
+    ]);
+
     return (
         <Wrapper>
             <LeftNav onLogOut={onLogOut} />
             
             <ContentBox>
-                <Outlet context={{ openModal, openEditModal, openModalProfileName, openModalHandle, openReplyModal }} />
+                <Outlet context={outletContext} />
             </ContentBox>
 
             <RightNav />
