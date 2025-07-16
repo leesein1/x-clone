@@ -1,18 +1,15 @@
 import type { ITweet } from "./timeline";
 import { auth } from "../../firebase";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { ActionGroup, Actions, ButtonRow, ContentColumn, DateText, Dot, Handle, Header, Payload, ProfileColumn, ProfileImage, TweetImage, Username, Wrapper } from "../design/tweet-design";
+import { ActionGroup, Actions, ButtonRow, ContentColumn, DateText, Dot, Handle, Header, Payload, ProfileColumn, ProfileImage, Username, Wrapper } from "../design/tweet-design";
 import TweetLike from "./tweet-likes"
 import TweetReply from "./tweet-reply-btn";
 import TweetDelete from "./tweet-delete";
 import TweetEdit from "./tweet-edit";
 import TweetBookmark from "./tweet-bookmark";
 
-interface TweetProps extends ITweet {
-  onImageLoad?: () => void; // 👈 이미지 로딩 후 호출할 함수
-}
 
-export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL, createdAtString, userHandle, onImageLoad}: TweetProps) {
+export default function Tweet({ username, photo, tweet, userId, id, userPhotoURL, createdAtString, userHandle}: ITweet) {
     const { openModal, openEditModal } = useOutletContext<{
         openModal: (opts: { title: string; message: string; onConfirm?: () => void }) => void;
         openEditModal : (opts:{ content: string; tweetId: string}) => void;
