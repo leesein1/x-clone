@@ -54,7 +54,9 @@ export const Tab = styled.div`
     }
 `;
 
-export const RenderBox = styled.div``;
+export const RenderBox = styled.div`
+width:100%;
+`;
 
 export const TabText = styled.div.withConfig({shouldForwardProp: (prop) => prop !== "active"})<{ active?: boolean }>`
     display: flex;
