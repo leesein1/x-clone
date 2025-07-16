@@ -1,5 +1,5 @@
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
-import { auth, db } from "../../firebase";
+import { db } from "../../firebase";
 import { ActionIcon, IconButton } from "../design/tweet-design";
 
 interface TweetReplyDeleteProps {

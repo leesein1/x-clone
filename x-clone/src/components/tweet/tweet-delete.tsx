@@ -1,6 +1,6 @@
 // TweetDelete.tsx
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
-import { ref, deleteObject, listAll } from "firebase/storage";
+import { ref, deleteObject } from "firebase/storage";
 import { auth, db, storage } from "../../firebase";
 import { ActionIcon, IconButton } from "../design/tweet-design";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -65,6 +65,19 @@ export default function TweetDelete({ tweetId, userId, photo, openModal }: Tweet
 
                     // 4. 트윗 삭제
                     await deleteDoc(doc(db, "tweets", tweetId));
+                    
+                    // 5. 북마크 삭제
+                    const bookmarkSnap = await getDocs(collection(db, "tweets", tweetId, "bookmarkedBy"));
+                    const bookmarkDeletions = bookmarkSnap.docs.map(async (docSnap) => {
+                        const bookmarkedByUid = docSnap.id; // user1, user2, ...
+                        
+                        // 각 유저의 bookmarks에서 tweetId 문서 삭제
+                        await deleteDoc(doc(db, "users", bookmarkedByUid, "bookmarks", tweetId));
+                        
+                        // tweets/{tweetId}/bookmarkedBy/{uid} 문서도 삭제
+                        await deleteDoc(doc(db, "tweets", tweetId, "bookmarkedBy", bookmarkedByUid));
+                    });
+                    await Promise.all(bookmarkDeletions);
 
                     // 5. 현재 페이지가 디테일 뷰라면 메인으로 이동
                     if (location.pathname.startsWith("/tweet/")) {

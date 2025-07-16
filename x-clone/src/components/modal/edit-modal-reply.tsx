@@ -1,5 +1,5 @@
 // components/tweet/EditReplyModal.tsx
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Modal from "react-modal";
 import { doc, updateDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
